@@ -18,32 +18,46 @@ export default function Home() {
 
 
       {/* Hero Section */}
-      <section className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+      <section
+  className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-center px-6 text-center"
+  style={{
+    backgroundImage: "url('/images/hero.jpg')",
+  }}
+>
 
-        <p className="mb-5 text-sm tracking-[0.5em] text-yellow-400">
-          PRIVATE HIBACHI EXPERIENCE
-        </p>
-
-
-        <h1 className="max-w-5xl text-5xl font-bold leading-tight md:text-8xl">
-          SONG
-          <br />
-          TEPPANYAKI
-        </h1>
+  {/* Dark Overlay */}
+  <div className="absolute inset-0 bg-black/60"></div>
 
 
-        <p className="mt-8 max-w-2xl text-lg text-gray-300 md:text-2xl">
-          Authentic Japanese Teppanyaki
-          <br />
-          Brought To Your Home
-        </p>
+  {/* Hero Content */}
+  <div className="relative z-10">
+
+    <p className="mb-5 text-sm tracking-[0.5em] text-yellow-400">
+      PRIVATE HIBACHI EXPERIENCE
+    </p>
 
 
-        <button className="mt-10 rounded-full bg-yellow-500 px-10 py-4 text-lg font-semibold text-black transition hover:bg-yellow-400">
-          BOOK YOUR EVENT
-        </button>
+    <h1 className="max-w-5xl text-5xl font-bold leading-tight text-white md:text-8xl">
+      SONG
+      <br />
+      TEPPANYAKI
+    </h1>
 
-      </section>
+
+    <p className="mt-8 max-w-2xl text-lg text-gray-200 md:text-2xl">
+      Authentic Japanese Teppanyaki
+      <br />
+      Brought To Your Home
+    </p>
+
+
+    <button className="mt-10 rounded-full bg-yellow-500 px-10 py-4 text-lg font-semibold text-black transition hover:bg-yellow-400">
+      BOOK YOUR EVENT
+    </button>
+
+  </div>
+
+</section>
 
 
       {/* Services Preview */}
