@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Dispatch,
   FormEvent,
   SetStateAction,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -23,6 +25,11 @@ type GuestCategory = {
 const MINIMUM_BOOKING_CHARGE = 600;
 const MINIMUM_GUEST_SLOTS = 10;
 const PROTEINS_PER_GUEST_SLOT = 2;
+
+const BUSINESS_ADDRESS =
+  "9083 Arcadia Ave, San Gabriel, CA 91775";
+const FREE_TRAVEL_MILES = 20;
+const TRAVEL_PRICE_PER_EXTRA_MILE = 2;
 
 const guestCategories: GuestCategory[] = [
   {
@@ -45,23 +52,10 @@ const guestCategories: GuestCategory[] = [
 const proteins = [
   "Chicken",
   "Steak",
-  "Filet Mignon",
   "Shrimp",
-  "Salmon",
-  "Scallops",
-  "Lobster Tail",
-  "Tofu",
 ];
 
 const addOns: PricedItem[] = [
-  {
-    name: "Garlic Fried Rice",
-    price: 5,
-  },
-  {
-    name: "Yakisoba Noodles",
-    price: 4,
-  },
   {
     name: "Extra Chicken",
     price: 6,
@@ -71,34 +65,24 @@ const addOns: PricedItem[] = [
     price: 8,
   },
   {
-    name: "Shrimp",
+    name: "Extra Shrimp",
     price: 8,
-  },
-  {
-    name: "Salmon",
-    price: 8,
-  },
-  {
-    name: "Scallops",
-    price: 10,
   },
   {
     name: "Lobster Tail",
     price: 10,
   },
   {
-    name: "Filet Mignon",
-    price: 12,
-  },
-  {
-    name: "Extra Vegetables",
-    price: 4,
-  },
-  {
-    name: "Kids Meal",
+    name: "Extra Filet Mignon",
     price: 15,
   },
 ];
+
+const proteinToAddOn: Record<string, string> = {
+  Chicken: "Extra Chicken",
+  Steak: "Extra Steak",
+  Shrimp: "Extra Shrimp",
+};
 
 const allergies = [
   "No Allergies",
@@ -129,6 +113,7 @@ const dietaryPreferences = [
 ];
 
 export default function BookingPage() {
+  const router = useRouter();
   const [guestQuantities, setGuestQuantities] = useState<
     Record<string, number>
   >({});
@@ -142,6 +127,17 @@ export default function BookingPage() {
   >({});
 
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
+
+  const [eventAddress, setEventAddress] = useState("");
+  const [eventCity, setEventCity] = useState("");
+  const [eventZipCode, setEventZipCode] = useState("");
+
+  const [distanceMiles, setDistanceMiles] = useState(0);
+  const [extraMiles, setExtraMiles] = useState(0);
+  const [travelFee, setTravelFee] = useState(0);
+  const [distanceLoading, setDistanceLoading] = useState(false);
+  const [distanceCalculated, setDistanceCalculated] = useState(false);
+  const [distanceError, setDistanceError] = useState("");
 
   const totalGuests = useMemo(() => {
     return guestCategories.reduce((total, category) => {
@@ -188,8 +184,19 @@ export default function BookingPage() {
    * 赠送蛋白质：5 × 2 = 10
    * 总共可选：20
    */
+  const adultProteinAllowance =
+    (guestQuantities["Adults"] || 0) * 2;
+
+  const childProteinAllowance =
+    (guestQuantities["Children"] || 0) * 1;
+
+  const underFiveProteinAllowance =
+    (guestQuantities["Children Under 5"] || 0) * 0.5;
+
   const regularProteinAllowance =
-    totalGuests * PROTEINS_PER_GUEST_SLOT;
+    adultProteinAllowance +
+    childProteinAllowance +
+    underFiveProteinAllowance;
 
   const complimentaryProteinAllowance =
     complimentaryGuestSlots * PROTEINS_PER_GUEST_SLOT;
@@ -208,9 +215,6 @@ export default function BookingPage() {
     totalIncludedProteinAllowance - totalProteinSelections,
   );
 
-  const proteinSelectionExceeded =
-    totalProteinSelections > totalIncludedProteinAllowance;
-
   const addOnsTotal = useMemo(() => {
     return addOns.reduce((total, item) => {
       const quantity = addOnQuantities[item.name] || 0;
@@ -219,7 +223,115 @@ export default function BookingPage() {
     }, 0);
   }, [addOnQuantities]);
 
-  const estimatedTotal = chargedGuestTotal + addOnsTotal;
+  const estimatedTotal =
+    chargedGuestTotal + addOnsTotal + travelFee;
+
+  const completeEventAddress = [
+    eventAddress.trim(),
+    eventCity.trim(),
+    "CA",
+    eventZipCode.trim(),
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  useEffect(() => {
+    const addressIsComplete =
+      eventAddress.trim().length >= 5 &&
+      eventCity.trim().length >= 2 &&
+      eventZipCode.trim().length >= 5;
+
+    if (!addressIsComplete) {
+      setDistanceMiles(0);
+      setExtraMiles(0);
+      setTravelFee(0);
+      setDistanceLoading(false);
+      setDistanceCalculated(false);
+      setDistanceError("");
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const timer = window.setTimeout(async () => {
+      try {
+        setDistanceLoading(true);
+        setDistanceCalculated(false);
+        setDistanceError("");
+
+        const response = await fetch("/api/distance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            destinationAddress: completeEventAddress,
+          }),
+          signal: controller.signal,
+        });
+
+        const responseText = await response.text();
+
+        let data: {
+          distanceMiles?: number;
+          extraMiles?: number;
+          travelFee?: number;
+          error?: string;
+        };
+
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error(
+            "Distance service returned an invalid response. Check app/api/distance/route.ts.",
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.error ||
+              "Unable to calculate the travel distance.",
+          );
+        }
+
+        setDistanceMiles(Number(data.distanceMiles || 0));
+        setExtraMiles(Number(data.extraMiles || 0));
+        setTravelFee(Number(data.travelFee || 0));
+        setDistanceCalculated(true);
+      } catch (error) {
+        if (
+          error instanceof DOMException &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        setDistanceMiles(0);
+        setExtraMiles(0);
+        setTravelFee(0);
+        setDistanceCalculated(false);
+        setDistanceError(
+          error instanceof Error
+            ? error.message
+            : "Unable to calculate the travel distance.",
+        );
+      } finally {
+        if (!controller.signal.aborted) {
+          setDistanceLoading(false);
+        }
+      }
+    }, 1200);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [
+    eventAddress,
+    eventCity,
+    eventZipCode,
+    completeEventAddress,
+  ]);
 
   function updateQuantity(
     setter: Dispatch<SetStateAction<Record<string, number>>>,
@@ -230,7 +342,9 @@ export default function BookingPage() {
       0,
       Math.min(
         100,
-        Number.isNaN(quantity) ? 0 : Math.floor(quantity),
+        Number.isNaN(quantity)
+          ? 0
+          : Math.round(quantity * 2) / 2,
       ),
     );
 
@@ -260,6 +374,151 @@ export default function BookingPage() {
     updateQuantity(setter, name, currentQuantity + 1);
   }
 
+  function decreaseGuestQuantity(name: string) {
+    const currentQuantity = guestQuantities[name] || 0;
+
+    setGuestQuantities((current) => ({
+      ...current,
+      [name]: Math.max(0, currentQuantity - 1),
+    }));
+  }
+
+  function increaseGuestQuantity(name: string) {
+    const currentQuantity = guestQuantities[name] || 0;
+
+    setGuestQuantities((current) => ({
+      ...current,
+      [name]: Math.min(100, currentQuantity + 1),
+    }));
+  }
+
+  function setGuestQuantity(name: string, quantity: number) {
+    const safeQuantity = Math.max(
+      0,
+      Math.min(
+        100,
+        Number.isNaN(quantity) ? 0 : Math.floor(quantity),
+      ),
+    );
+
+    setGuestQuantities((current) => ({
+      ...current,
+      [name]: safeQuantity,
+    }));
+  }
+
+  function increaseProteinQuantity(protein: string) {
+    const currentIncludedQuantity =
+      proteinQuantities[protein] || 0;
+
+    const availableIncludedPortions = Math.max(
+      0,
+      totalIncludedProteinAllowance - totalProteinSelections,
+    );
+
+    if (availableIncludedPortions > 0) {
+      const includedIncrease = Math.min(
+        0.5,
+        availableIncludedPortions,
+      );
+
+      updateQuantity(
+        setProteinQuantities,
+        protein,
+        currentIncludedQuantity + includedIncrease,
+      );
+
+      const paidIncrease = 0.5 - includedIncrease;
+
+      if (paidIncrease > 0) {
+        const addOnName = proteinToAddOn[protein];
+
+        updateQuantity(
+          setAddOnQuantities,
+          addOnName,
+          (addOnQuantities[addOnName] || 0) + paidIncrease,
+        );
+      }
+
+      return;
+    }
+
+    const addOnName = proteinToAddOn[protein];
+
+    updateQuantity(
+      setAddOnQuantities,
+      addOnName,
+      (addOnQuantities[addOnName] || 0) + 0.5,
+    );
+  }
+
+  function decreaseProteinQuantity(protein: string) {
+    const addOnName = proteinToAddOn[protein];
+    const paidQuantity = addOnQuantities[addOnName] || 0;
+
+    if (paidQuantity > 0) {
+      updateQuantity(
+        setAddOnQuantities,
+        addOnName,
+        paidQuantity - 0.5,
+      );
+      return;
+    }
+
+    decreaseQuantity(
+      proteinQuantities,
+      setProteinQuantities,
+      protein,
+    );
+  }
+
+  function setProteinQuantity(
+    protein: string,
+    requestedQuantity: number,
+  ) {
+    const safeRequestedQuantity = Math.max(
+      0,
+      Math.min(
+        100,
+        Number.isNaN(requestedQuantity)
+          ? 0
+          : Math.round(requestedQuantity * 2) / 2,
+      ),
+    );
+
+    const otherIncludedSelections =
+      totalProteinSelections -
+      (proteinQuantities[protein] || 0);
+
+    const includedCapacityForProtein = Math.max(
+      0,
+      totalIncludedProteinAllowance -
+        otherIncludedSelections,
+    );
+
+    const includedQuantity = Math.min(
+      safeRequestedQuantity,
+      includedCapacityForProtein,
+    );
+
+    const paidQuantity = Math.max(
+      0,
+      safeRequestedQuantity - includedQuantity,
+    );
+
+    updateQuantity(
+      setProteinQuantities,
+      protein,
+      includedQuantity,
+    );
+
+    updateQuantity(
+      setAddOnQuantities,
+      proteinToAddOn[protein],
+      paidQuantity,
+    );
+  }
+
   function handleAllergyChange(allergy: string, checked: boolean) {
     if (allergy === "No Allergies" && checked) {
       setSelectedAllergies(["No Allergies"]);
@@ -281,133 +540,119 @@ export default function BookingPage() {
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  
+function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    if (totalGuests === 0) {
-      alert("Please enter the number of guests.");
-      return;
-    }
-
-    if (proteinSelectionExceeded) {
-      alert(
-        [
-          "Protein selection exceeds the included allowance.",
-          "",
-          `Included protein portions: ${totalIncludedProteinAllowance}`,
-          `Selected protein portions: ${totalProteinSelections}`,
-          "",
-          "Please reduce the protein quantities before submitting.",
-        ].join("\n"),
-      );
-
-      return;
-    }
-
-    const formData = new FormData(event.currentTarget);
-
-    const selectedGuests = guestCategories
-      .filter(
-        (category) =>
-          (guestQuantities[category.name] || 0) > 0,
-      )
-      .map((category) => {
-        const quantity =
-          guestQuantities[category.name] || 0;
-
-        return {
-          category: category.name,
-          ageRange: category.description,
-          quantity,
-          pricePerGuest: category.price,
-          subtotal: quantity * category.price,
-        };
-      });
-
-    const selectedProteins = proteins
-      .filter(
-        (protein) =>
-          (proteinQuantities[protein] || 0) > 0,
-      )
-      .map((protein) => ({
-        name: protein,
-        quantity: proteinQuantities[protein] || 0,
-      }));
-
-    const selectedAddOns = addOns
-      .filter(
-        (item) =>
-          (addOnQuantities[item.name] || 0) > 0,
-      )
-      .map((item) => {
-        const quantity =
-          addOnQuantities[item.name] || 0;
-
-        return {
-          name: item.name,
-          quantity,
-          unitPrice: item.price,
-          subtotal: quantity * item.price,
-        };
-      });
-
-    const bookingData = {
-      fullName: formData.get("fullName"),
-      phone: formData.get("phone"),
-      email: formData.get("email"),
-      address: formData.get("address"),
-      city: formData.get("city"),
-      zipCode: formData.get("zipCode"),
-      eventDate: formData.get("eventDate"),
-      eventTime: formData.get("eventTime"),
-      occasion: formData.get("occasion"),
-
-      guests: selectedGuests,
-      totalGuests,
-
-      calculatedGuestTotal,
-      minimumBookingCharge: MINIMUM_BOOKING_CHARGE,
-      minimumChargeAdjustment,
-      chargedGuestTotal,
-
-      minimumGuestSlots: MINIMUM_GUEST_SLOTS,
-      complimentaryGuestSlots,
-
-      proteins: selectedProteins,
-      regularProteinAllowance,
-      complimentaryProteinAllowance,
-      totalIncludedProteinAllowance,
-      totalProteinSelections,
-      remainingProteinAllowance,
-
-      addOns: selectedAddOns,
-      addOnsTotal,
-
-      allergies: formData.getAll("allergies"),
-      otherAllergies: formData.get("otherAllergies"),
-      dietaryPreferences: formData.getAll(
-        "dietaryPreferences",
-      ),
-      specialRequests: formData.get("specialRequests"),
-
-      estimatedTotal,
-    };
-
-    console.log("Booking request:", bookingData);
-
-    alert(
-      [
-        "Thank you! Your booking request has been received.",
-        "",
-        `Total guests: ${totalGuests}`,
-        `Charged guest total: $${chargedGuestTotal.toFixed(2)}`,
-        `Included protein portions: ${totalIncludedProteinAllowance}`,
-        `Selected protein portions: ${totalProteinSelections}`,
-        `Add-ons total: $${addOnsTotal.toFixed(2)}`,
-        `Estimated total: $${estimatedTotal.toFixed(2)}`,
-      ].join("\n"),
-    );
+  if (totalGuests === 0) {
+    alert("Please enter the number of guests.");
+    return;
   }
+
+
+  const formData = new FormData(event.currentTarget);
+
+  const selectedGuests = guestCategories
+    .filter(
+      (category) =>
+        (guestQuantities[category.name] || 0) > 0,
+    )
+    .map((category) => {
+      const quantity =
+        guestQuantities[category.name] || 0;
+
+      return {
+        category: category.name,
+        ageRange: category.description,
+        quantity,
+        pricePerGuest: category.price,
+        subtotal: quantity * category.price,
+      };
+    });
+
+  const selectedProteins = proteins
+    .filter(
+      (protein) =>
+        (proteinQuantities[protein] || 0) > 0,
+    )
+    .map((protein) => ({
+      name: protein,
+      quantity: proteinQuantities[protein] || 0,
+    }));
+
+  const selectedAddOns = addOns
+    .filter(
+      (item) =>
+        (addOnQuantities[item.name] || 0) > 0,
+    )
+    .map((item) => {
+      const quantity =
+        addOnQuantities[item.name] || 0;
+
+      return {
+        name: item.name,
+        quantity,
+        unitPrice: item.price,
+        subtotal: quantity * item.price,
+      };
+    });
+
+  const bookingData = {
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone"),
+    email: formData.get("email"),
+
+    address: eventAddress,
+    city: eventCity,
+    zipCode: eventZipCode,
+    completeEventAddress,
+
+    distanceMiles,
+    freeTravelMiles: FREE_TRAVEL_MILES,
+    extraMiles,
+    travelPricePerExtraMile:
+      TRAVEL_PRICE_PER_EXTRA_MILE,
+    travelFee,
+
+    eventDate: formData.get("eventDate"),
+    eventTime: formData.get("eventTime"),
+    occasion: formData.get("occasion"),
+
+    guests: selectedGuests,
+    totalGuests,
+
+    calculatedGuestTotal,
+    minimumBookingCharge: MINIMUM_BOOKING_CHARGE,
+    minimumChargeAdjustment,
+    chargedGuestTotal,
+
+    minimumGuestSlots: MINIMUM_GUEST_SLOTS,
+    complimentaryGuestSlots,
+
+    proteins: selectedProteins,
+    regularProteinAllowance,
+    complimentaryProteinAllowance,
+    totalIncludedProteinAllowance,
+    totalProteinSelections,
+    remainingProteinAllowance,
+
+    addOns: selectedAddOns,
+    addOnsTotal,
+
+    allergies: formData.getAll("allergies"),
+    otherAllergies: formData.get("otherAllergies"),
+    dietaryPreferences: formData.getAll(
+      "dietaryPreferences",
+    ),
+    specialRequests: formData.get("specialRequests"),
+
+    estimatedTotal,
+  };
+
+  console.log("Booking request:", bookingData);
+
+  router.push("/booking/success");
+}
 
   return (
     <main className="min-h-screen bg-black px-5 py-10 text-white md:px-8">
@@ -440,9 +685,7 @@ export default function BookingPage() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-gray-400">
-            Tell us about your event, guest count, menu
-            selections and dietary needs. We will contact you
-            to confirm availability and final pricing.
+            Name, phone number, event address and guest count are required. All other details are optional and can be confirmed later.
           </p>
         </div>
 
@@ -458,7 +701,7 @@ export default function BookingPage() {
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <FormInput
-                label="Full Name"
+                label="Full Name *"
                 name="fullName"
                 type="text"
                 placeholder="Your full name"
@@ -466,7 +709,7 @@ export default function BookingPage() {
               />
 
               <FormInput
-                label="Phone Number"
+                label="Phone Number *"
                 name="phone"
                 type="tel"
                 placeholder="Your phone number"
@@ -474,36 +717,85 @@ export default function BookingPage() {
               />
 
               <FormInput
-                label="Email Address"
+                label="Email Address (Optional)"
                 name="email"
                 type="email"
                 placeholder="you@example.com"
-                required
               />
 
               <FormInput
-                label="Event Address"
+                label="Event Address *"
                 name="address"
                 type="text"
                 placeholder="Street address"
+                value={eventAddress}
+                onChange={setEventAddress}
                 required
               />
 
               <FormInput
-                label="City"
+                label="City *"
                 name="city"
                 type="text"
                 placeholder="City"
+                value={eventCity}
+                onChange={setEventCity}
                 required
               />
 
               <FormInput
-                label="ZIP Code"
+                label="ZIP Code *"
                 name="zipCode"
                 type="text"
                 placeholder="ZIP code"
+                value={eventZipCode}
+                onChange={setEventZipCode}
                 required
               />
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
+              <p className="font-bold text-yellow-400">
+                Travel Fee
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-gray-300">
+                Free travel within {FREE_TRAVEL_MILES} miles of{" "}
+                {BUSINESS_ADDRESS}. Each additional mile is $
+                {TRAVEL_PRICE_PER_EXTRA_MILE}. The estimate updates automatically when the full address is entered, but you may submit while it is still calculating.
+              </p>
+
+              {distanceLoading && (
+                <p className="mt-4 text-sm font-semibold text-white">
+                  Calculating driving distance and travel fee...
+                </p>
+              )}
+
+              {distanceError && (
+                <p className="mt-4 text-sm font-semibold text-red-300">
+                  {distanceError}
+                </p>
+              )}
+
+              {distanceCalculated && !distanceLoading && (
+                <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                  <SummaryBox
+                    label="Driving Distance"
+                    value={`${distanceMiles.toFixed(1)} mi`}
+                  />
+
+                  <SummaryBox
+                    label="Chargeable Distance"
+                    value={`${extraMiles} mi`}
+                  />
+
+                  <SummaryBox
+                    label="Travel Fee"
+                    value={`$${travelFee.toFixed(2)}`}
+                    highlighted
+                  />
+                </div>
+              )}
             </div>
           </section>
 
@@ -515,32 +807,29 @@ export default function BookingPage() {
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <FormInput
-                label="Event Date"
+                label="Event Date (Optional)"
                 name="eventDate"
                 type="date"
-                required
               />
 
               <FormInput
-                label="Preferred Time"
+                label="Preferred Time (Optional)"
                 name="eventTime"
                 type="time"
-                required
               />
 
               <label className="block md:col-span-2">
                 <span className="mb-2 block text-sm font-medium text-gray-200">
-                  Occasion
+                  Occasion (Optional)
                 </span>
 
                 <select
                   name="occasion"
-                  required
                   defaultValue=""
                   className="w-full rounded-xl border border-white/15 bg-black px-4 py-3 text-white outline-none transition focus:border-yellow-400"
                 >
                   <option value="" disabled>
-                    Select an occasion
+                    Select an occasion (optional)
                   </option>
 
                   <option>Birthday</option>
@@ -564,7 +853,7 @@ export default function BookingPage() {
             <div className="flex flex-col gap-4 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-yellow-400">
-                  Number of Guests
+                  Number of Guests *
                 </h2>
 
                 <p className="mt-2 text-sm text-gray-400">
@@ -621,25 +910,13 @@ export default function BookingPage() {
                       name={category.name}
                       quantity={quantity}
                       onDecrease={() =>
-                        decreaseQuantity(
-                          guestQuantities,
-                          setGuestQuantities,
-                          category.name,
-                        )
+                        decreaseGuestQuantity(category.name)
                       }
                       onIncrease={() =>
-                        increaseQuantity(
-                          guestQuantities,
-                          setGuestQuantities,
-                          category.name,
-                        )
+                        increaseGuestQuantity(category.name)
                       }
                       onChange={(value) =>
-                        updateQuantity(
-                          setGuestQuantities,
-                          category.name,
-                          value,
-                        )
+                        setGuestQuantity(category.name, value)
                       }
                     />
 
@@ -699,10 +976,11 @@ export default function BookingPage() {
               </h2>
 
               <p className="mt-2 text-sm text-gray-400">
-                Each guest includes two protein selections.
-                When your party has fewer than 10 guests, each
-                unused minimum guest slot also includes two
-                complimentary protein portions.
+                Adults include 2 protein portions, children
+                ages 5–13 include 1 portion, and children under
+                5 include 0.5 portion. When the included
+                allowance is full, additional Chicken, Steak,
+                or Shrimp automatically moves to paid Add-ons.
               </p>
             </div>
 
@@ -710,7 +988,7 @@ export default function BookingPage() {
               <ProteinSummaryCard
                 label="Actual Guest Protein Portions"
                 value={regularProteinAllowance}
-                description={`${totalGuests} guests × ${PROTEINS_PER_GUEST_SLOT} proteins`}
+                description={`Adults: ${adultProteinAllowance}, children: ${childProteinAllowance}, under 5: ${underFiveProteinAllowance}`}
               />
 
               <ProteinSummaryCard
@@ -731,7 +1009,6 @@ export default function BookingPage() {
                 label="Remaining Protein Portions"
                 value={remainingProteinAllowance}
                 description={`${totalProteinSelections} currently selected`}
-                warning={proteinSelectionExceeded}
               />
             </div>
 
@@ -778,25 +1055,13 @@ export default function BookingPage() {
                       name={protein}
                       quantity={quantity}
                       onDecrease={() =>
-                        decreaseQuantity(
-                          proteinQuantities,
-                          setProteinQuantities,
-                          protein,
-                        )
+                        decreaseProteinQuantity(protein)
                       }
                       onIncrease={() =>
-                        increaseQuantity(
-                          proteinQuantities,
-                          setProteinQuantities,
-                          protein,
-                        )
+                        increaseProteinQuantity(protein)
                       }
                       onChange={(value) =>
-                        updateQuantity(
-                          setProteinQuantities,
-                          protein,
-                          value,
-                        )
+                        setProteinQuantity(protein, value)
                       }
                     />
                   </div>
@@ -806,9 +1071,7 @@ export default function BookingPage() {
 
             <div
               className={`mt-6 rounded-2xl border p-5 ${
-                proteinSelectionExceeded
-                  ? "border-red-500/50 bg-red-500/10"
-                  : "border-yellow-400/30 bg-yellow-400/10"
+"border-yellow-400/30 bg-yellow-400/10"
               }`}
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -818,18 +1081,11 @@ export default function BookingPage() {
                   </p>
 
                   <p
-                    className={`mt-1 text-sm ${
-                      proteinSelectionExceeded
-                        ? "text-red-300"
-                        : "text-gray-300"
-                    }`}
+                    className="mt-1 text-sm text-gray-300"
                   >
-                    {proteinSelectionExceeded
-                      ? `You selected ${
-                          totalProteinSelections -
-                          totalIncludedProteinAllowance
-                        } protein portions over the included allowance.`
-                      : `${remainingProteinAllowance} included protein portions remaining.`}
+                    {remainingProteinAllowance > 0
+                      ? `${remainingProteinAllowance} included protein portions remaining.`
+                      : "Included protein allowance is full. Additional selections automatically appear in Add-ons and are added to the total price."}
                   </p>
                 </div>
 
@@ -839,11 +1095,7 @@ export default function BookingPage() {
                   </p>
 
                   <p
-                    className={`text-2xl font-bold ${
-                      proteinSelectionExceeded
-                        ? "text-red-400"
-                        : "text-yellow-400"
-                    }`}
+                    className="text-2xl font-bold text-yellow-400"
                   >
                     {totalProteinSelections} /{" "}
                     {totalIncludedProteinAllowance}
@@ -1058,6 +1310,11 @@ export default function BookingPage() {
                 value={addOnsTotal}
               />
 
+              <PriceRow
+                label="Travel Fee"
+                value={travelFee}
+              />
+
               <div className="border-t border-yellow-400/20 pt-4">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-lg font-bold text-white">
@@ -1091,9 +1348,10 @@ export default function BookingPage() {
             </div>
 
             <p className="mt-5 text-xs leading-5 text-gray-400">
-              This is an estimated total. Final pricing may
-              change based on location, travel requirements,
-              menu details and other event requirements.
+              This is an estimated total. The travel fee is
+              calculated from the event address and included
+              above. Final pricing may change if the address,
+              menu details, or other event requirements change.
             </p>
           </section>
 
@@ -1103,12 +1361,11 @@ export default function BookingPage() {
               <input
                 type="checkbox"
                 name="acknowledgement"
-                required
                 className="mt-1 h-4 w-4 accent-yellow-400"
               />
 
               <span>
-                I understand that submitting this form does
+                Optional acknowledgement: I understand that submitting this form does
                 not confirm the booking. Song Teppanyaki will
                 contact me to confirm availability, menu
                 details and final pricing.
@@ -1117,14 +1374,11 @@ export default function BookingPage() {
 
             <button
               type="submit"
-              disabled={proteinSelectionExceeded}
-              className="mt-8 w-full rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-300"
+              className="mt-8 w-full rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-black transition hover:bg-yellow-400"
             >
-              {proteinSelectionExceeded
-                ? "REDUCE PROTEIN QUANTITIES"
-                : `SUBMIT BOOKING REQUEST — $${estimatedTotal.toFixed(
-                    2,
-                  )}`}
+              {`SUBMIT BOOKING REQUEST — $${estimatedTotal.toFixed(
+                2,
+              )}`}
             </button>
           </div>
         </form>
@@ -1139,6 +1393,8 @@ type FormInputProps = {
   type: string;
   placeholder?: string;
   required?: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
 };
 
 function FormInput({
@@ -1147,6 +1403,8 @@ function FormInput({
   type,
   placeholder,
   required,
+  value,
+  onChange,
 }: FormInputProps) {
   return (
     <label className="block">
@@ -1159,6 +1417,12 @@ function FormInput({
         name={name}
         placeholder={placeholder}
         required={required}
+        value={value}
+        onChange={
+          onChange
+            ? (event) => onChange(event.target.value)
+            : undefined
+        }
         className="w-full rounded-xl border border-white/15 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-yellow-400"
       />
     </label>
@@ -1195,6 +1459,7 @@ function QuantityControl({
         type="number"
         min="0"
         max="100"
+        step="0.5"
         value={quantity}
         onChange={(event) =>
           onChange(Number(event.target.value))
