@@ -76,6 +76,10 @@ const addOns: PricedItem[] = [
     name: "Extra Filet Mignon",
     price: 15,
   },
+  {
+  name: "Calamari Steak",
+  price: 8,
+},
 ];
 
 const proteinToAddOn: Record<string, string> = {
@@ -127,6 +131,8 @@ export default function BookingPage() {
   >({});
 
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
+  const [tablesAndChairsSelected, setTablesAndChairsSelected] = useState(false);
+  const [tableSetupSelected, setTableSetupSelected] = useState(false);
 
   const [eventAddress, setEventAddress] = useState("");
   const [eventCity, setEventCity] = useState("");
@@ -223,8 +229,23 @@ export default function BookingPage() {
     }, 0);
   }, [addOnQuantities]);
 
+  const setupPricePerPerson =
+    (tablesAndChairsSelected ? 6 : 0) +
+    (tableSetupSelected ? 14 : 0);
+
+  const setupFee = totalGuests * setupPricePerPerson;
+
+  const setupOptionLabel =
+    tablesAndChairsSelected && tableSetupSelected
+      ? "Tables & Chairs + Tableware, Flowers & Table Lighting"
+      : tablesAndChairsSelected
+        ? "Tables & Chairs"
+        : tableSetupSelected
+          ? "Tableware, Flowers & Table Lighting"
+          : "No Event Setup";
+
   const estimatedTotal =
-    chargedGuestTotal + addOnsTotal + travelFee;
+    chargedGuestTotal + addOnsTotal + travelFee + setupFee;
 
   const completeEventAddress = [
     eventAddress.trim(),
@@ -639,6 +660,12 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
     addOns: selectedAddOns,
     addOnsTotal,
 
+    tablesAndChairsSelected,
+    tableSetupSelected,
+    setupOptionLabel,
+    setupPricePerPerson,
+    setupFee,
+
     allergies: formData.getAll("allergies"),
     otherAllergies: formData.get("otherAllergies"),
     dietaryPreferences: formData.getAll(
@@ -651,7 +678,7 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
 
   console.log("Booking request:", bookingData);
 
-  router.push("/booking/success");
+router.push("/booking/payment");
 }
 
   return (
@@ -1194,6 +1221,134 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
             </div>
           </section>
 
+
+          {/* Event Setup */}
+          <section>
+            <div className="flex flex-col gap-3 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-yellow-400">
+                  Event Setup
+                </h2>
+
+                <p className="mt-2 text-sm text-gray-400">
+                  Select either option or choose both. Setup services are charged per guest and added separately to the booking total.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-5 py-3">
+                <p className="text-xs uppercase tracking-widest text-gray-400">
+                  Setup Total
+                </p>
+
+                <p className="mt-1 text-2xl font-bold text-yellow-400">
+                  ${setupFee.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label
+                className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${
+                  tablesAndChairsSelected
+                    ? "border-yellow-400/60 bg-yellow-400/10"
+                    : "border-white/10 bg-black/30 hover:border-yellow-400/60"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="tablesAndChairs"
+                  value="selected"
+                  checked={tablesAndChairsSelected}
+                  onChange={(event) =>
+                    setTablesAndChairsSelected(event.target.checked)
+                  }
+                  className="mt-1 h-4 w-4 accent-yellow-400"
+                />
+
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="font-semibold text-white">
+                      Tables & Chairs
+                    </h3>
+
+                    <span className="font-bold text-yellow-400">
+                      $6 per guest
+                    </span>
+                  </div>
+
+                  <p className="mt-2 text-sm text-gray-400">
+                    We provide tables and chairs for all guests.
+                  </p>
+                </div>
+              </label>
+
+              <label
+                className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${
+                  tableSetupSelected
+                    ? "border-yellow-400/60 bg-yellow-400/10"
+                    : "border-white/10 bg-black/30 hover:border-yellow-400/60"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="tableSetup"
+                  value="selected"
+                  checked={tableSetupSelected}
+                  onChange={(event) =>
+                    setTableSetupSelected(event.target.checked)
+                  }
+                  className="mt-1 h-4 w-4 accent-yellow-400"
+                />
+
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="font-semibold text-white">
+                      Tableware, Flowers & Table Lighting
+                    </h3>
+
+                    <span className="font-bold text-yellow-400">
+                      $14 per guest
+                    </span>
+                  </div>
+
+                  <p className="mt-2 text-sm text-gray-400">
+                    Includes tableware, floral arrangements and tabletop lighting.
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            {tablesAndChairsSelected && tableSetupSelected && (
+              <div className="mt-5 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
+                <p className="font-bold text-yellow-400">
+                  Combined Event Setup: $20 per guest
+                </p>
+
+                <p className="mt-2 text-sm text-gray-300">
+                  Both setup services are selected. The system automatically calculates $6 + $14 = $20 per guest.
+                </p>
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              <SummaryBox
+                label="Selected Setup"
+                value={setupOptionLabel}
+              />
+
+              <SummaryBox
+                label="Price Per Guest"
+                value={`$${setupPricePerPerson.toFixed(2)}`}
+              />
+
+              <SummaryBox
+                label="Setup Fee"
+                value={`$${setupFee.toFixed(2)}`}
+                highlighted
+              />
+            </div>
+          </section>
+
           {/* Allergies */}
           <section>
             <h2 className="text-2xl font-bold text-yellow-400">
@@ -1313,6 +1468,11 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
               <PriceRow
                 label="Travel Fee"
                 value={travelFee}
+              />
+
+              <PriceRow
+                label={`Event Setup — ${setupOptionLabel}`}
+                value={setupFee}
               />
 
               <div className="border-t border-yellow-400/20 pt-4">
