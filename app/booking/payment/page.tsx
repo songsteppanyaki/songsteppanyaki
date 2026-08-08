@@ -13,7 +13,13 @@ export default function BookingPaymentPage() {
     try {
       setLoading(true);
       setError("");
+const savedBooking = sessionStorage.getItem("songTeppanyakiBooking");
 
+if (!savedBooking) {
+  throw new Error("Booking details were not found. Please return to the booking page.");
+}
+
+const bookingData = JSON.parse(savedBooking);
       const response = await fetch(
         "/api/stripe/create-checkout-session",
         {
@@ -22,8 +28,9 @@ export default function BookingPaymentPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            depositAmount: DEPOSIT_AMOUNT,
-          }),
+  depositAmount: DEPOSIT_AMOUNT,
+  bookingData,
+}),
         },
       );
 

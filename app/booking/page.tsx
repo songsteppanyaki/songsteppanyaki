@@ -716,7 +716,10 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
 
     estimatedTotal,
   };
-
+sessionStorage.setItem(
+  "songTeppanyakiBooking",
+  JSON.stringify(bookingData)
+);
   console.log("Booking request:", bookingData);
 
 router.push("/booking/payment");
