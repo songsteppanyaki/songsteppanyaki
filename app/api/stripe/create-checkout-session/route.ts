@@ -35,11 +35,11 @@ export async function POST(request: NextRequest) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: 20000,
+            unit_amount: 100,
             product_data: {
               name: "Song Teppanyaki Booking Deposit",
               description:
-                "Non-refundable $200 booking deposit. The deposit will be applied toward the final event balance.",
+                "Non-refundable $1 booking deposit. The deposit will be applied toward the final event balance.",
             },
           },
         },

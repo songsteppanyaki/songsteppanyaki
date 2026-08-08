@@ -70,16 +70,57 @@ const addOns: PricedItem[] = [
   },
   {
     name: "Lobster Tail",
-    price: 10,
+    price: 15,
   },
   {
     name: "Extra Filet Mignon",
     price: 15,
   },
   {
-  name: "Calamari Steak",
-  price: 8,
-},
+    name: "Calamari Steak",
+    price: 8,
+  },
+
+  {
+    name: "Edamame",
+    price: 5,
+  },
+  {
+    name: "Extra Fried Rice",
+    price: 3,
+  },
+  {
+    name: "Extra Vegetables",
+    price: 3,
+  },
+  {
+    name: "Scallops",
+    price: 8,
+  },
+  {
+    name: "Salmon",
+    price: 8,
+  },
+  {
+    name: "Extra Salad",
+    price: 2,
+  },
+  {
+    name: "Gyoza",
+    price: 5,
+  },
+  {
+    name: "Noodles",
+    price: 4,
+  },
+  {
+    name: "Sushi",
+    price: 8,
+  },
+  {
+    name: "Fried Tofu",
+    price: 6,
+  },
 ];
 
 const proteinToAddOn: Record<string, string> = {
