@@ -246,28 +246,25 @@ export async function POST(req: NextRequest) {
       // ==========================================
       // 3. GOOGLE CALENDAR
       // ==========================================
+const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
-   const googleEmail =
-  process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-
-const googlePrivateKey =
-  process.env.GOOGLE_PRIVATE_KEY?.replace(
-    /\\n/g,
-    "\n",
-  );
-
-const calendarId =
-  process.env.GOOGLE_CALENDAR_ID;
+const googleCredentialsBase64 =
+  process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64;
 
 if (
-  googleEmail &&
-  googlePrivateKey &&
+  googleCredentialsBase64 &&
   calendarId &&
   metadata.eventDate
 ) {
-  const auth = new google.auth.JWT({
-    email: googleEmail,
-    key: googlePrivateKey,
+  const credentials = JSON.parse(
+    Buffer.from(
+      googleCredentialsBase64,
+      "base64",
+    ).toString("utf8"),
+  );
+
+  const auth = new google.auth.GoogleAuth({
+    credentials,
     scopes: [
       "https://www.googleapis.com/auth/calendar",
     ],
