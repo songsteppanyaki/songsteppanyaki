@@ -243,9 +243,10 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // ==========================================
-      // 3. GOOGLE CALENDAR
-      // ==========================================
+// ==========================================
+// 3. GOOGLE CALENDAR
+// ==========================================
+
 const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
 const googleCredentialsBase64 =
@@ -270,12 +271,12 @@ if (
     ],
   });
 
-        const calendar = google.calendar({
-          version: "v3",
-          auth,
-        });
+  const calendar = google.calendar({
+    version: "v3",
+    auth,
+  });
 
-        const eventDescription = `
+  const eventDescription = `
 Customer: ${metadata.fullName || "N/A"}
 Phone: ${metadata.phone || "N/A"}
 Email: ${metadata.email || email || "N/A"}
@@ -312,76 +313,122 @@ Remaining Balance: $${remainingBalance}
 
 Special Requests:
 ${metadata.specialRequests || "None"}
-        `.trim();
+`.trim();
 
-        if (metadata.eventTime) {
-          const startDateTime =
-            `${metadata.eventDate}T${metadata.eventTime}:00`;
+  if (metadata.eventTime) {
+    const startDateTime =
+      `${metadata.eventDate}T${metadata.eventTime}:00`;
 
-          const startDate = new Date(startDateTime);
-
-          const endDate = new Date(
-            startDate.getTime() + 2 * 60 * 60 * 1000,
-          );
-
-          await calendar.events.insert({
-            calendarId,
-            requestBody: {
-              summary:
-                `Song Teppanyaki - ${metadata.fullName || "Booking"}`,
-
-              location: metadata.address || "",
-
-              description: eventDescription,
-
-              start: {
-                dateTime: startDateTime,
-                timeZone: "America/Los_Angeles",
-              },
-
-              end: {
-                dateTime: endDate.toISOString(),
-                timeZone: "America/Los_Angeles",
-              },
-            },
-          });
-        } else {
-          await calendar.events.insert({
-            calendarId,
-            requestBody: {
-              summary:
-                `Song Teppanyaki - ${metadata.fullName || "Booking"}`,
-
-              location: metadata.address || "",
-
-              description: eventDescription,
-
-              start: {
-                date: metadata.eventDate,
-              },
-
-              end: {
-                date: metadata.eventDate,
-              },
-            },
-          });
-        }
-      }
-    }
-
-    return NextResponse.json({
-      received: true,
-    });
-  } catch (e) {
-    console.error("Webhook error:", e);
-
-    return NextResponse.json(
-      {
-        error: "Webhook failed",
-      },
-      {
-        status: 400,
-      },
+    // 用 UTC 只做“钟表时间 + 2小时”的计算，
+    // 最后仍然交给 Google 按 Los Angeles 时区解释
+    const tempDate = new Date(
+      `${metadata.eventDate}T${metadata.eventTime}:00Z`,
     );
+
+    tempDate.setUTCHours(
+      tempDate.getUTCHours() + 2,
+    );
+
+    const endDateTime = tempDate
+      .toISOString()
+      .slice(0, 19);
+
+    console.log(
+      "Creating Google Calendar event:",
+      startDateTime,
+      endDateTime,
+      calendarId,
+    );
+
+    const calendarEvent =
+      await calendar.events.insert({
+        calendarId,
+        requestBody: {
+          summary:
+            `Song Teppanyaki - ${
+              metadata.fullName || "Booking"
+            }`,
+
+          location: metadata.address || "",
+
+          description: eventDescription,
+
+          start: {
+            dateTime: startDateTime,
+            timeZone: "America/Los_Angeles",
+          },
+
+          end: {
+            dateTime: endDateTime,
+            timeZone: "America/Los_Angeles",
+          },
+        },
+      });
+
+    console.log(
+      "Google Calendar event created:",
+      calendarEvent.data.id,
+    );
+  } else {
+    // 如果客户没有填写时间，就创建全天事件
+
+    const startDate = new Date(
+      `${metadata.eventDate}T00:00:00Z`,
+    );
+
+    startDate.setUTCDate(
+      startDate.getUTCDate() + 1,
+    );
+
+    const nextDate = startDate
+      .toISOString()
+      .slice(0, 10);
+
+    const calendarEvent =
+      await calendar.events.insert({
+        calendarId,
+        requestBody: {
+          summary:
+            `Song Teppanyaki - ${
+              metadata.fullName || "Booking"
+            }`,
+
+          location: metadata.address || "",
+
+          description: eventDescription,
+
+          start: {
+            date: metadata.eventDate,
+          },
+
+          end: {
+            date: nextDate,
+          },
+        },
+      });
+
+        console.log(
+        "Google Calendar event created:",
+        calendarEvent.data.id,
+      );
+    }
   }
+}
+
+return NextResponse.json({
+  received: true,
+});
+
+} catch (e) {
+  console.error("Webhook error:", e);
+
+  return NextResponse.json(
+    {
+      error: "Webhook failed",
+    },
+    {
+      status: 400,
+    },
+  );
+}
 }
