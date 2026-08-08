@@ -1,6 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 const services = [
   {
     number: "01",
@@ -95,33 +97,37 @@ const faqs = [
 ];
 
 const galleryImages = [
-  {
-    src: "/gallery/gallery-1.jpg",
-    alt: "Song Teppanyaki private hibachi event",
-  },
-  {
-    src: "/gallery/gallery-2.jpg",
-    alt: "Private chef preparing hibachi food",
-  },
-  {
-    src: "/gallery/gallery-3.jpg",
-    alt: "Hibachi fire show",
-  },
-  {
-    src: "/gallery/gallery-4.jpg",
-    alt: "Backyard hibachi party",
-  },
-  {
-    src: "/gallery/gallery-5.jpg",
-    alt: "Private teppanyaki dining experience",
-  },
-  {
-    src: "/gallery/gallery-6.jpg",
-    alt: "Song Teppanyaki celebration",
-  },
+  { src: "/gallery/gallery-1.jpg", alt: "Song Teppanyaki Event 1" },
+  { src: "/gallery/gallery-2.jpg", alt: "Song Teppanyaki Event 2" },
+  { src: "/gallery/gallery-3.jpg", alt: "Song Teppanyaki Event 3" },
+  { src: "/gallery/gallery-4.jpg", alt: "Song Teppanyaki Event 4" },
+  { src: "/gallery/gallery-5.jpg", alt: "Song Teppanyaki Event 5" },
+  { src: "/gallery/gallery-6.jpg", alt: "Song Teppanyaki Event 6" },
+  { src: "/gallery/gallery-7.png", alt: "Song Teppanyaki Event 7" },
+  { src: "/gallery/gallery-8.jpg", alt: "Song Teppanyaki Event 8" },
+  { src: "/gallery/gallery-9.jpg", alt: "Song Teppanyaki Event 9" },
+  { src: "/gallery/gallery-10.jpg", alt: "Song Teppanyaki Event 10" },
+  { src: "/gallery/gallery-11.jpg", alt: "Song Teppanyaki Event 11" },
+  { src: "/gallery/gallery-12.jpg", alt: "Song Teppanyaki Event 12" },
+  { src: "/gallery/gallery-13.jpg", alt: "Song Teppanyaki Event 13" },
+  { src: "/gallery/gallery-14.jpg", alt: "Song Teppanyaki Event 14" },
+  { src: "/gallery/gallery-15.jpg", alt: "Song Teppanyaki Event 15" },
 ];
 
 export default function HomePage() {
+  const [currentGallery, setCurrentGallery] = useState(0);
+
+const prevGallery = () => {
+  setCurrentGallery((prev) =>
+    prev === 0 ? galleryImages.length - 1 : prev - 1
+  );
+};
+
+const nextGallery = () => {
+  setCurrentGallery((prev) =>
+    prev === galleryImages.length - 1 ? 0 : prev + 1
+  );
+};
   return (
     <main className="min-h-screen overflow-hidden bg-neutral-950 text-white">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
@@ -161,13 +167,21 @@ export default function HomePage() {
       </header>
 
       <section
-        className="relative flex min-h-screen items-center bg-cover bg-center px-5 pt-24"
-        style={{ backgroundImage: "url('/images/hero.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-black/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/65 to-black/20" />
+     className="relative flex min-h-screen items-center overflow-hidden px-5 pt-24">
+ <video
+    autoPlay
+  muted
+  loop
+  playsInline
+  className="absolute inset-0 z-0 h-full w-full object-cover"
+>
+  <source src="/videos/hibachi-bg.mp4" type="video/mp4" />
+</video>
 
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+<div className="absolute inset-0 z-10 bg-black/10" />
+<div className="absolute inset-0 z-10 bg-gradient-to-r from-black/40 via-black/10to-transparent" />
+
+<div className="relative z-20 mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <p className="text-sm font-bold tracking-[0.4em] text-amber-400">
               PRIVATE HIBACHI EXPERIENCE
@@ -303,36 +317,126 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-12 grid auto-rows-[230px] gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {galleryImages.map((image, index) => (
-              <div
-                key={image.src}
-                className={`group relative overflow-hidden rounded-3xl ${
-                  index === 0 || index === 4
-                    ? "md:row-span-2"
-                    : ""
-                }`}
-              >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-110"
-                />
+        <div className="relative mx-auto mt-12 w-full max-w-5xl">
+  <div className="relative overflow-hidden rounded-3xl bg-black">
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80" />
+    <img
+      src={galleryImages[currentGallery].src}
+      alt={galleryImages[currentGallery].alt}
+      className="h-[520px] w-full object-cover"
+    />
 
-                <div className="absolute bottom-0 left-0 p-5">
-                  <p className="font-bold text-white">
-                    Song Teppanyaki Experience
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+<button
+  type="button"
+  onClick={prevGallery}
+  aria-label="Previous photo"
+  style={{
+    position: "absolute",
+    left: "20px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 999,
+    width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    backgroundColor: "#fbbf24",
+    color: "#000",
+    fontSize: "32px",
+    fontWeight: "bold",
+    border: "none",
+    cursor: "pointer",
+  }}
+>
+  ←
+</button>
+
+<button
+  type="button"
+  onClick={nextGallery}
+  aria-label="Next photo"
+  style={{
+    position: "absolute",
+    right: "20px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 999,
+    width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    backgroundColor: "#fbbf24",
+    color: "#000",
+    fontSize: "32px",
+    fontWeight: "bold",
+    border: "none",
+    cursor: "pointer",
+  }}
+>
+  →
+</button>
+
+    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 text-sm font-bold text-white">
+      {currentGallery + 1} / {galleryImages.length}
+    </div>
+
+  </div>
+</div>
+</div>
       </section>
+{/* FOOD GALLERY */}
+<section className="bg-neutral-950 px-5 py-24 text-white">
+  <div className="mx-auto max-w-7xl">
+
+    <div className="text-center">
+      <p className="text-sm font-bold tracking-[0.35em] text-amber-400">
+        OUR FOOD
+      </p>
+
+      <h2 className="mt-4 text-4xl font-black md:text-5xl">
+        Fresh From The Grill
+      </h2>
+
+      <p className="mx-auto mt-5 max-w-2xl text-neutral-400">
+        Fresh ingredients prepared live on the hibachi grill.
+      </p>
+    </div>
+
+    <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+      {[
+        { name: "Fresh Garden Salad", src: "/food/food-1.webp" },
+        { name: "Gyoza", src: "/food/food-2.jpg" },
+        { name: "Yakisoba Noodles", src: "/food/food-3.jpg" },
+        { name: "Sushi Rolls", src: "/food/food-4.jpg" },
+        { name: "Hibachi Tofu", src: "/food/food-5.webp" },
+        { name: "Edamame", src: "/food/food-6.jpeg" },
+        { name: "Hibachi Fried Rice", src: "/food/food-7.png" },
+        { name: "Hibachi Vegetables", src: "/food/food-8.png" },
+        { name: "Hibachi Steak", src: "/food/food-9.png" },
+        { name: "Hibachi Chicken", src: "/food/food-10.png" },
+        { name: "Hibachi Shrimp", src: "/food/food-11.png" },
+        { name: "Hibachi Scallops", src: "/food/food-12.png" },
+        { name: "Grilled Salmon", src: "/food/food-13.png" },
+        { name: "Lobster Tail", src: "/food/food-14.png" },
+        { name: "Calamari", src: "/food/food-15.jpg" },
+      ].map((food) => (
+        <div key={food.name} className="group">
+
+          <div className="h-56 overflow-hidden rounded-3xl">
+  <img
+    src={food.src}
+    alt={food.name}
+    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+  />
+</div>
+          <h3 className="mt-3 text-center text-base font-bold text-white">
+            {food.name}
+          </h3>
+
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
 
       <section className="px-5 py-24">
         <div className="mx-auto max-w-7xl">
