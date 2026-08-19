@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: 20000,
+            unit_amount: 100,
             product_data: {
               name: "Song Teppanyaki Booking Deposit",
               description:
