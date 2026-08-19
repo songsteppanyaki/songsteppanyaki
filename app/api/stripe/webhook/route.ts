@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       // ==========================================
 
       await resend.emails.send({
-        from: "Song Teppanyaki <onboarding@resend.dev>",
+        from: "Song Teppanyaki <booking@songsteppanyaki.com>",
         to: "songsteppanyaki@gmail.com",
         subject: "New Booking - Deposit Received",
         html: `
@@ -205,7 +205,7 @@ export async function POST(req: NextRequest) {
 
       if (email) {
         await resend.emails.send({
-          from: "Song Teppanyaki <onboarding@resend.dev>",
+          from: "Song Teppanyaki <booking@songsteppanyaki.com>",
           to: email,
           subject: "Song Teppanyaki Booking Confirmation",
           html: `
