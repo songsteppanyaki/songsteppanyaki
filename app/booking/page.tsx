@@ -185,6 +185,7 @@ export default function BookingPage() {
   const [distanceLoading, setDistanceLoading] = useState(false);
   const [distanceCalculated, setDistanceCalculated] = useState(false);
   const [distanceError, setDistanceError] = useState("");
+  const [salesTaxRate, setSalesTaxRate] = useState<number | null>(null);
 
   const totalGuests = useMemo(() => {
     return guestCategories.reduce((total, category) => {
@@ -285,8 +286,13 @@ export default function BookingPage() {
           ? "Tableware, Flowers & Table Lighting"
           : "No Event Setup";
 
-  const estimatedTotal =
-    chargedGuestTotal + addOnsTotal + travelFee + setupFee;
+  const subtotal =
+  chargedGuestTotal + addOnsTotal + travelFee + setupFee;
+
+const salesTax =
+    salesTaxRate === null ? 0 : subtotal * salesTaxRate;
+
+  const estimatedTotal = subtotal + salesTax;
 
   const completeEventAddress = [
     eventAddress.trim(),
@@ -310,6 +316,7 @@ export default function BookingPage() {
       setDistanceLoading(false);
       setDistanceCalculated(false);
       setDistanceError("");
+      setSalesTaxRate(null);
       return;
     }
 
@@ -328,6 +335,9 @@ export default function BookingPage() {
           },
           body: JSON.stringify({
             destinationAddress: completeEventAddress,
+            address: eventAddress.trim(),
+            city: eventCity.trim(),
+            zip: eventZipCode.trim(),
           }),
           signal: controller.signal,
         });
@@ -338,6 +348,8 @@ export default function BookingPage() {
           distanceMiles?: number;
           extraMiles?: number;
           travelFee?: number;
+          salesTaxRate?: number;
+          taxJurisdiction?: string;
           error?: string;
         };
 
@@ -359,6 +371,11 @@ export default function BookingPage() {
         setDistanceMiles(Number(data.distanceMiles || 0));
         setExtraMiles(Number(data.extraMiles || 0));
         setTravelFee(Number(data.travelFee || 0));
+        setSalesTaxRate(
+          typeof data.salesTaxRate === "number"
+            ? data.salesTaxRate
+            : null,
+        );
         setDistanceCalculated(true);
       } catch (error) {
         if (
@@ -372,6 +389,7 @@ export default function BookingPage() {
         setExtraMiles(0);
         setTravelFee(0);
         setDistanceCalculated(false);
+        setSalesTaxRate(null);
         setDistanceError(
           error instanceof Error
             ? error.message
@@ -713,7 +731,9 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
       "dietaryPreferences",
     ),
     specialRequests: formData.get("specialRequests"),
-
+    subtotal,
+    salesTax,
+    salesTaxRate,
     estimatedTotal,
   };
 sessionStorage.setItem(
@@ -1518,7 +1538,14 @@ router.push("/booking/payment");
                 label={`Event Setup — ${setupOptionLabel}`}
                 value={setupFee}
               />
-
+<PriceRow
+                label={
+                  salesTaxRate === null
+                    ? "Sales Tax (enter complete event address)"
+                    : `Sales Tax (${(salesTaxRate * 100).toFixed(2)}%)`
+                }
+                value={salesTax}
+              />
               <div className="border-t border-yellow-400/20 pt-4">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-lg font-bold text-white">

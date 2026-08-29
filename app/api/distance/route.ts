@@ -11,10 +11,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as {
       destinationAddress?: string;
+      address?: string;
+      city?: string;
+      zip?: string;
     };
 
     const destinationAddress =
       body.destinationAddress?.trim();
+
+    const taxAddress = body.address?.trim();
+    const taxCity = body.city?.trim();
+    const taxZip = body.zip?.trim();
 
     if (!destinationAddress) {
       return NextResponse.json(
@@ -104,10 +111,88 @@ export async function POST(request: NextRequest) {
     const travelFee =
       extraMiles * TRAVEL_PRICE_PER_EXTRA_MILE;
 
+    let salesTaxRate: number | null = null;
+    let taxJurisdiction = "";
+
+    if (taxAddress && taxCity && /^\d{5}$/.test(taxZip || "")) {
+      const taxUrl = new URL(
+        "https://services.maps.cdtfa.ca.gov/api/taxrate/GetRateByAddress",
+      );
+
+      taxUrl.searchParams.set("address", taxAddress);
+      taxUrl.searchParams.set("city", taxCity);
+      taxUrl.searchParams.set("zip", taxZip || "");
+
+      const taxResponse = await fetch(taxUrl.toString(), {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!taxResponse.ok) {
+        const taxErrorText = await taxResponse.text();
+        console.error(
+          "CDTFA Tax Rate API error:",
+          taxErrorText,
+        );
+
+        return NextResponse.json(
+          {
+            error:
+              "Unable to determine the current sales tax rate for this event address. Please verify the street address, city, and ZIP code.",
+          },
+          { status: 400 },
+        );
+      }
+
+      const taxData = (await taxResponse.json()) as {
+        taxRateInfo?: Array<{
+          rate?: number;
+          jurisdiction?: string;
+          city?: string;
+          county?: string;
+          tac?: string;
+        }>;
+        geocodeInfo?: {
+          formattedAddress?: string;
+          confidence?: string;
+          calcMethod?: string;
+        };
+      };
+
+      const taxInfo = taxData.taxRateInfo?.[0];
+
+      if (typeof taxInfo?.rate !== "number") {
+        console.error(
+          "CDTFA Tax Rate API returned no usable rate:",
+          taxData,
+        );
+
+        return NextResponse.json(
+          {
+            error:
+              "A sales tax rate could not be determined for this event address. Please verify the address.",
+          },
+          { status: 400 },
+        );
+      }
+
+      salesTaxRate = taxInfo.rate;
+      taxJurisdiction = taxInfo.jurisdiction || taxInfo.city || "";
+
+      if ((taxData.taxRateInfo?.length || 0) > 1) {
+        console.warn(
+          "CDTFA returned multiple tax areas for this address; using the first result:",
+          taxData.taxRateInfo,
+        );
+      }
+    }
+
     return NextResponse.json({
       distanceMiles: Number(distanceMiles.toFixed(1)),
       extraMiles,
       travelFee,
+      salesTaxRate,
+      taxJurisdiction,
     });
   } catch (error) {
     console.error("Distance API error:", error);

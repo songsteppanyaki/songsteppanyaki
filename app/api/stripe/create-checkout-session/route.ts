@@ -19,10 +19,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-   const stripe = new Stripe(secretKey, {
-  httpClient: Stripe.createFetchHttpClient(),
-  maxNetworkRetries: 0,
-});
+    const stripe = new Stripe(secretKey, {
+      httpClient: Stripe.createFetchHttpClient(),
+      maxNetworkRetries: 0,
+    });
 
     const origin =
       request.headers.get("origin") ||
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
             product_data: {
               name: "Song Teppanyaki Booking Deposit",
               description:
-                "Non-refundable $200 booking deposit. The deposit will be applied toward the final event balance.",
+                 "Refundable if canceled at least 48 hours before the scheduled event start time, subject to a 10% cancellation fee. Non-refundable within 48 hours.",
             },
           },
         },
@@ -55,40 +55,80 @@ export async function POST(request: NextRequest) {
 
       cancel_url: `${origin}/booking/payment?canceled=true`,
 
-     metadata: {
-  businessName: "Song Teppanyaki",
-  depositAmount: "200",
-  depositPolicy: "Non-refundable",
+      metadata: {
+        businessName: "Song Teppanyaki",
 
-  fullName: String(bookingData?.fullName || ""),
-  phone: String(bookingData?.phone || ""),
-  email: String(bookingData?.email || ""),
+        depositAmount: "200",
 
-  address: String(bookingData?.completeEventAddress || ""),
+        depositPolicy:
+         "10% cancellation fee applies if canceled at least 48 hours before the scheduled event start time. Cancellations within 48 hours are non-refundable.",
 
-  eventDate: String(bookingData?.eventDate || ""),
-  eventTime: String(bookingData?.eventTime || ""),
-  occasion: String(bookingData?.occasion || ""),
+        fullName: String(bookingData?.fullName || ""),
+        phone: String(bookingData?.phone || ""),
+        email: String(bookingData?.email || ""),
 
-  totalGuests: String(bookingData?.totalGuests || 0),
+        address: String(
+          bookingData?.completeEventAddress || "",
+        ),
+        city: String(bookingData?.city || ""),
+        zipCode: String(bookingData?.zipCode || ""),
 
-  guests: JSON.stringify(bookingData?.guests || []),
-  proteins: JSON.stringify(bookingData?.proteins || []),
-  addOns: JSON.stringify(bookingData?.addOns || []),
+        eventDate: String(bookingData?.eventDate || ""),
+        eventTime: String(bookingData?.eventTime || ""),
+        occasion: String(bookingData?.occasion || ""),
 
-  allergies: JSON.stringify(bookingData?.allergies || []),
-  dietaryPreferences: JSON.stringify(
-    bookingData?.dietaryPreferences || [],
-  ),
+        totalGuests: String(
+          bookingData?.totalGuests || 0,
+        ),
 
-  specialRequests: String(
-    bookingData?.specialRequests || "",
-  ),
+        guests: JSON.stringify(
+          bookingData?.guests || [],
+        ),
 
-  distanceMiles: String(bookingData?.distanceMiles || 0),
-  travelFee: String(bookingData?.travelFee || 0),
-  estimatedTotal: String(bookingData?.estimatedTotal || 0),
-},
+        proteins: JSON.stringify(
+          bookingData?.proteins || [],
+        ),
+
+        addOns: JSON.stringify(
+          bookingData?.addOns || [],
+        ),
+
+        allergies: JSON.stringify(
+          bookingData?.allergies || [],
+        ),
+
+        dietaryPreferences: JSON.stringify(
+          bookingData?.dietaryPreferences || [],
+        ),
+
+        specialRequests: String(
+          bookingData?.specialRequests || "",
+        ),
+
+        distanceMiles: String(
+          bookingData?.distanceMiles || 0,
+        ),
+
+        travelFee: String(
+          bookingData?.travelFee || 0,
+        ),
+
+        subtotal: String(
+          bookingData?.subtotal || 0,
+        ),
+
+        salesTax: String(
+          bookingData?.salesTax || 0,
+        ),
+
+        salesTaxRate: String(
+          bookingData?.salesTaxRate || 0,
+        ),
+
+        estimatedTotal: String(
+          bookingData?.estimatedTotal || 0,
+        ),
+      },
     });
 
     if (!session.url) {

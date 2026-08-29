@@ -1,14 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const DEPOSIT_AMOUNT = 200;
 
 export default function BookingPaymentPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  const [bookingData, setBookingData] = useState<Record<string, any> | null>(null);
 
+useEffect(() => {
+  const savedBooking = sessionStorage.getItem("songTeppanyakiBooking");
+
+  if (savedBooking) {
+    try {
+      setBookingData(JSON.parse(savedBooking));
+    } catch {
+      setBookingData(null);
+    }
+  }
+}, []);
+const subtotal = Number(bookingData?.subtotal ?? 0);
+const salesTax = Number(bookingData?.salesTax ?? 0);
+const salesTaxRate = Number(bookingData?.salesTaxRate ?? 0);
+const estimatedTotal = Number(bookingData?.estimatedTotal ?? 0);
+const remainingBalance = Math.max(
+  estimatedTotal - DEPOSIT_AMOUNT,
+  0,
+);
   async function handlePayment() {
     try {
       setLoading(true);
@@ -89,8 +110,7 @@ const bookingData = JSON.parse(savedBooking);
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl leading-7 text-gray-400">
-              A non-refundable deposit is required before your
-              event request can be reserved.
+              A $200 booking deposit is required before your event request can be reserved.
             </p>
           </div>
 
@@ -113,28 +133,79 @@ const bookingData = JSON.parse(savedBooking);
             </div>
           </div>
 
-          <div className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-black/30 p-6">
-            <h2 className="text-xl font-bold text-white">
-              Before You Pay
-            </h2>
+          <div className="mt-8 rounded-2xl border border-white/10 bg-black/30 p-6">
+  <h2 className="text-xl font-bold text-white">
+    Order Summary
+  </h2>
 
-            <p className="text-sm leading-6 text-gray-300">
-              By continuing, you understand that the $
-              {DEPOSIT_AMOUNT} deposit is non-refundable.
-            </p>
+  <div className="mt-5 space-y-3 text-sm">
+    <div className="flex items-center justify-between">
+      <span className="text-gray-400">Estimated Event Total</span>
+      <span className="font-semibold text-white">
+        ${estimatedTotal.toFixed(2)}
+      </span>
+    </div>
 
-            <p className="text-sm leading-6 text-gray-300">
-              Your booking is not fully confirmed until Song
-              Teppanyaki reviews your event details and contacts
-              you.
-            </p>
+    <div className="flex items-center justify-between">
+      <span className="text-gray-400">
+        Sales Tax ({(salesTaxRate * 100).toFixed(2)}%)
+      </span>
+      <span className="font-semibold text-white">
+        ${salesTax.toFixed(2)}
+      </span>
+    </div>
 
-            <p className="text-sm leading-6 text-gray-300">
-              After successful payment, a confirmation email
-              will be sent to you and the booking details will
-              be sent to songsteppanyaki@gmail.com.
-            </p>
-          </div>
+    <div className="border-t border-white/10 pt-3">
+      <div className="flex items-center justify-between">
+        <span className="font-bold text-white">
+          Deposit Due Today
+        </span>
+        <span className="text-2xl font-bold text-yellow-400">
+          ${DEPOSIT_AMOUNT.toFixed(2)}
+        </span>
+      </div>
+    </div>
+
+    <div className="flex items-center justify-between">
+      <span className="text-gray-400">
+        Remaining Balance
+      </span>
+      <span className="font-semibold text-white">
+        ${remainingBalance.toFixed(2)}
+      </span>
+    </div>
+  </div>
+
+  <div className="mt-6 border-t border-white/10 pt-5">
+    <h3 className="font-bold text-white">
+      Before You Pay
+    </h3>
+
+    <p className="text-sm leading-6 text-gray-300">
+  Your ${DEPOSIT_AMOUNT} deposit is refundable if you
+  cancel your booking at least 48 hours before the
+  scheduled event start time. A 10% cancellation fee
+  will be deducted from the refund.
+</p>
+
+<p className="text-sm leading-6 text-gray-300">
+  Cancellations made within 48 hours of the scheduled
+  event start time are non-refundable.
+</p>
+
+<p className="text-sm leading-6 text-gray-300">
+  Your booking is not fully confirmed until Song
+  Teppanyaki reviews your event details and contacts
+  you.
+</p>
+
+<p className="text-sm leading-6 text-gray-300">
+  After successful payment, a confirmation email will
+  be sent to you and the booking details will be sent
+  to songsteppanyaki@gmail.com.
+</p>
+  </div>
+</div>
 
           {error && (
             <div className="mt-6 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-300">
