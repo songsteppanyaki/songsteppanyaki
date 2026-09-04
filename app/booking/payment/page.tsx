@@ -110,7 +110,7 @@ const bookingData = JSON.parse(savedBooking);
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl leading-7 text-gray-400">
-              A $200 booking deposit is required before your event request can be reserved.
+              A $100 booking deposit is required before your event request can be reserved.
             </p>
           </div>
 
