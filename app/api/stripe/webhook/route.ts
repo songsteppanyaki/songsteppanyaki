@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       );
 
       const depositPaid = Number(
-        metadata.depositAmount || 200,
+        metadata.depositAmount || 100,
       );
 
       const remainingBalance = Math.max(

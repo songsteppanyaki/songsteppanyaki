@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         businessName: "Song Teppanyaki",
 
-        depositAmount: "200",
+        depositAmount: "100",
 
         depositPolicy:
          "10% cancellation fee applies if canceled at least 48 hours before the scheduled event start time. Cancellations within 48 hours are non-refundable.",
