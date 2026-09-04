@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const DEPOSIT_AMOUNT = 200;
+const DEPOSIT_AMOUNT = 100;
 
 export default function BookingPaymentPage() {
   const [loading, setLoading] = useState(false);
