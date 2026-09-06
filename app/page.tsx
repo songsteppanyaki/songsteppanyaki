@@ -130,82 +130,85 @@ const nextGallery = () => {
 };
   return (
     <main className="min-h-screen overflow-hidden bg-neutral-950 text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-md">
-  <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur">
+  <div className="mx-auto flex max-w-7xl flex-col px-5 py-4">
 
-    {/* Logo */}
-    <Link href="/" className="group shrink-0">
-      <p className="text-2xl font-black tracking-[0.25em] text-white">
-        SONG
-      </p>
-      <p className="text-[11px] tracking-[0.35em] text-amber-400">
-        TEPPANYAKI
-      </p>
-    </Link>
+    {/* 第一行：Logo + 导航 + BOOK NOW */}
+    <div className="flex items-center justify-between">
 
-    {/* Navigation */}
-    <nav className="hidden items-center gap-7 text-sm font-semibold lg:flex">
-      <a
-        className="transition hover:text-amber-400"
-        href="#services"
-      >
-        Services
-      </a>
+      {/* Logo */}
+      <Link href="/" className="group shrink-0">
+        <p className="text-xl font-black tracking-[0.25em]">
+          SONG
+        </p>
+        <p className="text-[10px] tracking-[0.35em] text-amber-400">
+          TEPPANYAKI
+        </p>
+      </Link>
 
-      <a
-        className="transition hover:text-amber-400"
-        href="#gallery"
-      >
-        Gallery
-      </a>
-
-      <a
-        className="transition hover:text-amber-400"
-        href="#pricing"
-      >
-        Pricing
-      </a>
-
-      <a
-        className="transition hover:text-amber-400"
-        href="#reviews"
-      >
-        Reviews
-      </a>
-
-      <a
-        className="transition hover:text-amber-400"
-        href="#faq"
-      >
-        FAQ
-      </a>
-    </nav>
-
-    {/* Contact + Book */}
-    <div className="flex items-center gap-5">
-
-      <div className="hidden text-right text-xs leading-5 md:block">
+      {/* Navigation */}
+      <nav className="hidden items-center gap-7 text-sm font-semibold md:flex">
         <a
-          href="tel:6266498696"
-          className="block text-white transition hover:text-amber-400"
+          className="transition hover:text-amber-400"
+          href="#services"
         >
-          626-649-8696
+          Services
         </a>
 
         <a
-          href="mailto:songsteppanyaki@gmail.com"
-          className="block text-neutral-400 transition hover:text-amber-400"
+          className="transition hover:text-amber-400"
+          href="#gallery"
         >
-          songsteppanyaki@gmail.com
+          Gallery
         </a>
-      </div>
 
+        <a
+          className="transition hover:text-amber-400"
+          href="#pricing"
+        >
+          Pricing
+        </a>
+
+        <a
+          className="transition hover:text-amber-400"
+          href="#reviews"
+        >
+          Reviews
+        </a>
+
+        <a
+          className="transition hover:text-amber-400"
+          href="#faq"
+        >
+          FAQ
+        </a>
+      </nav>
+
+      {/* Book Now */}
       <Link
         href="/booking"
-        className="rounded-full bg-amber-400 px-6 py-3 text-sm font-black text-black transition hover:bg-amber-300"
+        className="rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black transition hover:bg-amber-300"
       >
         BOOK NOW
       </Link>
+    </div>
+
+    {/* 联系方式：电脑和手机都显示 */}
+    <div className="mt-3 flex flex-col items-center justify-center gap-1 border-t border-white/10 pt-3 text-xs text-neutral-300 sm:flex-row sm:gap-6">
+      
+      <a
+        href="tel:6266498696"
+        className="transition hover:text-amber-400"
+      >
+        📞 626-649-8696
+      </a>
+
+      <a
+        href="mailto:songsteppanyaki@gmail.com"
+        className="transition hover:text-amber-400"
+      >
+        ✉ songsteppanyaki@gmail.com
+      </a>
 
     </div>
 
