@@ -633,6 +633,23 @@ const nextGallery = () => {
             <p className="mt-1">
               Authentic Japanese Teppanyaki Brought To Your Home
             </p>
+
+<p className="mt-3">
+   Phone:{" "}
+  <a href="tel:6266498696" className="hover:text-white underline">
+    626-649-8696
+  </a>
+</p>
+
+<p>
+ Email:{" "}
+  <a
+    href="mailto:songsteppanyaki@gmail.com"
+    className="hover:text-white underline"
+  >
+    songsteppanyaki@gmail.com
+  </a>
+</p>
           </div>
 
           <div className="flex gap-6">
