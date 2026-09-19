@@ -14,6 +14,8 @@ export default function BookingSuccessPage() {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
 
+    // Only send a Google Ads purchase conversion when Stripe
+    // has redirected to this page with a Checkout Session ID.
     if (!sessionId) return;
 
     window.gtag?.("event", "conversion", {
