@@ -1049,7 +1049,7 @@ router.push("/booking/payment");
             {minimumChargeAdjustment > 0 && (
               <div className="mt-4 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
                 <p className="font-semibold text-yellow-400">
-                  Minimum booking adjustment: $
+                  Minimum Event Spend: $
                   {minimumChargeAdjustment.toFixed(2)}
                 </p>
 
@@ -1525,7 +1525,7 @@ router.push("/booking/payment");
 
               {minimumChargeAdjustment > 0 && (
                 <PriceRow
-                  label="Minimum Booking Adjustment"
+                  label="Minimum Event Spend"
                   value={minimumChargeAdjustment}
                 />
               )}
