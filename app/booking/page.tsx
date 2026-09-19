@@ -952,7 +952,7 @@ router.push("/booking/payment");
                 </p>
 
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
-                  A $600 minimum booking charge applies.
+                  A $600 minimum spend is required. 
                   Add-ons are charged separately.
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
