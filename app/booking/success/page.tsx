@@ -1,6 +1,29 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export default function BookingSuccessPage() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+
+    if (!sessionId) return;
+
+    window.gtag?.("event", "conversion", {
+      send_to: "AW-18454208775/ClMVC0CJ8fOcEIfC099E",
+      value: 100,
+      currency: "USD",
+      transaction_id: sessionId,
+    });
+  }, []);
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-5 py-12 text-white">
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center shadow-2xl md:p-12">
