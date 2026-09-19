@@ -955,6 +955,9 @@ router.push("/booking/payment");
                   A $600 minimum booking charge applies.
                   Add-ons are charged separately.
                 </p>
+                <p className="mt-2 text-sm font-semibold text-yellow-400">
+  A $100 non-refundable deposit is required to confirm your booking.
+</p>
               </div>
 
               <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-5 py-3">
