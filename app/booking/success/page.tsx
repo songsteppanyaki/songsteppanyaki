@@ -19,7 +19,7 @@ export default function BookingSuccessPage() {
     if (!sessionId) return;
 
     window.gtag?.("event", "conversion", {
-      send_to: "AW-18454208775/ClMVC0CJ8fOcEIfC099E",
+      send_to: "AW-18454208775/CIMVCOCJ8f0cElfC099E",
       value: 100,
       currency: "USD",
       transaction_id: sessionId,
