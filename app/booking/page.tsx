@@ -1055,6 +1055,14 @@ router.push("/booking/payment");
                   $600 minimum, so the guest charge is adjusted
                   to $600.
                 </p>
+                <div className="mt-4 pt-4 border-t border-yellow-400/30">
+  <p className="font-semibold text-yellow-400">
+    A $100 non-refundable deposit is required to confirm your booking.
+  </p>
+  <p className="mt-1 text-gray-300">
+    The remaining balance is due on the event date.
+  </p>
+</div>
               </div>
             )}
           </section>
