@@ -1049,14 +1049,11 @@ router.push("/booking/payment");
             {minimumChargeAdjustment > 0 && (
               <div className="mt-4 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
                 <p className="font-semibold text-yellow-400">
-                  Minimum Event Spend: $
-                  {minimumChargeAdjustment.toFixed(2)}
+              A $600 minimum spend applies to every event.
                 </p>
 
                 <p className="mt-2 text-sm leading-6 text-gray-300">
-                  Your calculated guest total is below the
-                  $600 minimum, so the guest charge is adjusted
-                  to $600.
+                  Your calculated guest total is below the $600 minimum, so your charged guest total is adjusted to $600.
                 </p>
                 <div className="mt-4 pt-4 border-t border-yellow-400/30">
   <p className="font-semibold text-yellow-400">
@@ -1523,13 +1520,7 @@ router.push("/booking/payment");
                 value={calculatedGuestTotal}
               />
 
-              {minimumChargeAdjustment > 0 && (
-                <PriceRow
-                  label="Minimum Event Spend"
-                  value={minimumChargeAdjustment}
-                />
-              )}
-
+             
               <PriceRow
                 label="Charged Guest Total"
                 value={chargedGuestTotal}
