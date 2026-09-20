@@ -61,6 +61,10 @@ const addOns: PricedItem[] = [
     price: 6,
   },
   {
+  name: "Filet Mignon Upgrade",
+  price: 10,
+},
+  {
     name: "Extra Steak",
     price: 8,
   },
@@ -239,7 +243,7 @@ export default function BookingPage() {
     (guestQuantities["Children"] || 0) * 1;
 
   const underFiveProteinAllowance =
-    (guestQuantities["Children Under 5"] || 0) * 0.5;
+    (guestQuantities["Children Under 5"] || 0) * 0;
 
   const regularProteinAllowance =
     adultProteinAllowance +
@@ -498,7 +502,7 @@ const salesTax =
 
     if (availableIncludedPortions > 0) {
       const includedIncrease = Math.min(
-        0.5,
+        1,
         availableIncludedPortions,
       );
 
@@ -508,7 +512,7 @@ const salesTax =
         currentIncludedQuantity + includedIncrease,
       );
 
-      const paidIncrease = 0.5 - includedIncrease;
+      const paidIncrease = 1 - includedIncrease;
 
       if (paidIncrease > 0) {
         const addOnName = proteinToAddOn[protein];
@@ -528,7 +532,7 @@ const salesTax =
     updateQuantity(
       setAddOnQuantities,
       addOnName,
-      (addOnQuantities[addOnName] || 0) + 0.5,
+      (addOnQuantities[addOnName] || 0) + 1,
     );
   }
 
@@ -540,7 +544,7 @@ const salesTax =
       updateQuantity(
         setAddOnQuantities,
         addOnName,
-        paidQuantity - 0.5,
+        paidQuantity - 1,
       );
       return;
     }
@@ -1060,7 +1064,7 @@ router.push("/booking/payment");
     A $100 non-refundable deposit is required to confirm your booking.
   </p>
   <p className="mt-1 text-gray-300">
-    The remaining balance is due on the event date.
+    The remaining balance is due at the end of the service on the event date.
   </p>
 </div>
               </div>
@@ -1077,7 +1081,7 @@ router.push("/booking/payment");
               <p className="mt-2 text-sm text-gray-400">
                 Adults include 2 protein portions, children
                 ages 5–13 include 1 portion, and children under
-                5 include 0.5 portion. When the included
+                5 include 0 portion. When the included
                 allowance is full, additional Chicken, Steak,
                 or Shrimp automatically moves to paid Add-ons.
               </p>
@@ -1692,10 +1696,10 @@ function QuantityControl({
         type="number"
         min="0"
         max="100"
-        step="0.5"
+        step="1"
         value={quantity}
         onChange={(event) =>
-          onChange(Number(event.target.value))
+      onChange(Math.round(Number(event.target.value)))
         }
         aria-label={`${name} quantity`}
         className="h-11 w-20 border-y border-white/15 bg-black text-center text-lg font-semibold text-white outline-none focus:border-yellow-400"
