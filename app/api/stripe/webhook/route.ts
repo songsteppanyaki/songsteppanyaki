@@ -442,6 +442,8 @@ Estimated Total: $${estimatedTotal.toFixed(2)}
 
 Deposit Paid: $${depositPaid.toFixed(2)}
 Remaining Balance: $${remainingBalance.toFixed(2)}
+Please note: Chef tips are not included in the estimated total. Tips are voluntary and typically range from 20%-30% of the meal total, based on your satisfaction with the chef's service.
+
 
 Deposit Policy:
 ${depositPolicy}

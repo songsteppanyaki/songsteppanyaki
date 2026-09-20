@@ -1648,7 +1648,11 @@ router.push("/booking/payment");
                 details and final pricing.
               </span>
             </label>
-
+<p className="mt-6 text-sm leading-6 text-slate-400">
+  Chef tips are not included in the estimated total. Tips are voluntary
+  and typically range from 20%-30% of the meal total, based on your
+  satisfaction with the chef's service.
+</p>
             <button
               type="submit"
               className="mt-8 w-full rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-black transition hover:bg-yellow-400"
