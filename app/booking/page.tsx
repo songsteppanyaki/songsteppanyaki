@@ -1561,7 +1561,7 @@ router.push("/booking/payment");
     <button
       type="button"
       onClick={() => {
-    if (promoCode.trim().toUpperCase() === "WELCOME10") {
+    if (promoCode.trim().toUpperCase() === "FIRST50") {
       setDiscount(50);
       alert("Promo code applied!");
     } else {
