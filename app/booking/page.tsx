@@ -190,6 +190,8 @@ export default function BookingPage() {
   const [distanceCalculated, setDistanceCalculated] = useState(false);
   const [distanceError, setDistanceError] = useState("");
   const [salesTaxRate, setSalesTaxRate] = useState<number | null>(null);
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
 
   const totalGuests = useMemo(() => {
     return guestCategories.reduce((total, category) => {
@@ -298,7 +300,7 @@ const totalIncludedProteinAllowance = Math.max(
 const salesTax =
     salesTaxRate === null ? 0 : subtotal * salesTaxRate;
 
-  const estimatedTotal = subtotal + salesTax;
+  const estimatedTotal = subtotal + salesTax - discount;
 
   const completeEventAddress = [
     eventAddress.trim(),
@@ -1536,7 +1538,43 @@ router.push("/booking/payment");
                 label="Add-ons Total"
                 value={addOnsTotal}
               />
+              {discount > 0 && (
+  <PriceRow
+    label="Promotion Discount"
+    value={-discount}
+  />
+)}
+<div className="mt-4 mb-4">
+  <label className="block text-sm text-gray-300 mb-2">
+    Promotion Code
+  </label>
 
+  <div className="flex gap-2">
+    <input
+      type="text"
+      placeholder="Enter promo code"
+        value={promoCode}
+  onChange={(e) => setPromoCode(e.target.value)}
+      className="flex-1 h-11 rounded-lg border border-white/15 bg-black px-4 text-white"
+    />
+
+    <button
+      type="button"
+      onClick={() => {
+    if (promoCode.trim().toUpperCase() === "WELCOME10") {
+      setDiscount(50);
+      alert("Promo code applied!");
+    } else {
+      setDiscount(0);
+      alert("Invalid promo code");
+    }
+  }}
+      className="px-5 rounded-lg bg-yellow-400 text-black font-semibold"
+    >
+      Apply
+    </button>
+  </div>
+</div>
               <PriceRow
                 label="Travel Fee"
                 value={travelFee}
