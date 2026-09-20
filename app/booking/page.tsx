@@ -253,8 +253,10 @@ export default function BookingPage() {
   const complimentaryProteinAllowance =
     complimentaryGuestSlots * PROTEINS_PER_GUEST_SLOT;
 
-  const totalIncludedProteinAllowance =
-    regularProteinAllowance + complimentaryProteinAllowance;
+const totalIncludedProteinAllowance = Math.max(
+  regularProteinAllowance + complimentaryProteinAllowance,
+  MINIMUM_GUEST_SLOTS * PROTEINS_PER_GUEST_SLOT
+);
 
   const totalProteinSelections = useMemo(() => {
     return proteins.reduce((total, protein) => {
