@@ -553,15 +553,14 @@ const nextGallery = () => {
           <div className="mt-8 rounded-3xl border border-amber-400/30 bg-amber-400/10 p-6 text-center">
 <p className="text-xl font-black">$600 Minimum Package</p>
 
-<p className="mx-auto mt-3 max-w-3xl leading-7 text-neutral-300">
-  Includes service for up to 10 guests. Each guest receives 2 protein
-  portions — choose from Steak, Chicken, and Shrimp.
-</p>
-
-<p className="mx-auto mt-2 max-w-3xl leading-7 text-neutral-300">
-  Also includes 10 servings of Salad, 10 servings of Fried Rice,
-  and 10 servings of Vegetables.
-</p>
+<div className="mt-5 space-y-3 text-lg md:text-xl leading-8 text-neutral-300">
+  <p>Up to 10 guests</p>
+  <p>2 protein portions per guest</p>
+  <p>Choose from Steak, Chicken, and Shrimp</p>
+  <p>10 servings of Salad</p>
+  <p>10 servings of Fried Rice</p>
+  <p>10 servings of Vegetables</p>
+</div>
 
 <p className="mx-auto mt-2 max-w-3xl text-neutral-300">
   Travel is free within 20 miles of San Gabriel. Each additional mile is $2.

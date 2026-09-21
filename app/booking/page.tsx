@@ -961,8 +961,7 @@ router.push("/booking/payment");
                 </p>
 
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
-                  A $600 minimum spend is required. 
-                  Add-ons are charged separately.
+                 $600 minimum food spend applies. Add-ons, travel fees, event setup, and sales tax are charged separately.
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
   A $100 deposit is required to confirm your booking.
