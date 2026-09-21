@@ -906,9 +906,10 @@ router.push("/booking/payment");
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <FormInput
-                label="Event Date (Optional)"
+                label="Event Date *"
                 name="eventDate"
                 type="date"
+                required
               />
 
               <FormInput
@@ -1049,7 +1050,7 @@ The deposit will be credited toward your total and deducted from the final balan
               />
 
               <SummaryBox
-                label="Charged Guest Total"
+                label="Minimum Guest Total"
                 value={`$${chargedGuestTotal.toFixed(2)}`}
                 highlighted
               />
@@ -1062,12 +1063,9 @@ The deposit will be credited toward your total and deducted from the final balan
                 </p>
 
                 <p className="mt-2 text-sm leading-6 text-gray-300">
-                  Your calculated guest total is below the $600 minimum, so your charged guest total is adjusted to $600.
+                  Your calculated guest total is below the $600 minimum, so the $600 minimum booking total applies.
                 </p>
                 <div className="mt-4 pt-4 border-t border-yellow-400/30">
-  <p className="font-semibold text-yellow-400">
-    A $100 non-refundable deposit is required to confirm your booking.
-  </p>
   <p className="mt-1 text-gray-300">
     The remaining balance is due at the end of the service on the event date.
   </p>
@@ -1102,22 +1100,22 @@ The deposit will be credited toward your total and deducted from the final balan
               <ProteinSummaryCard
                 label="Complimentary Protein Portions"
                 value={complimentaryProteinAllowance}
-                description={`${complimentaryGuestSlots} unused guest slots × ${PROTEINS_PER_GUEST_SLOT} proteins`}
+              description="Included with your minimum booking."
                 highlighted
               />
 
               <ProteinSummaryCard
                 label="Total Included Proteins"
                 value={totalIncludedProteinAllowance}
-                description="Maximum included protein portions"
+                description="Included with your booking"
                 highlighted
               />
 
               <ProteinSummaryCard
-                label="Remaining Protein Portions"
-                value={remainingProteinAllowance}
-                description={`${totalProteinSelections} currently selected`}
-              />
+  label="Remaining Protein Choices"
+  value={remainingProteinAllowance}
+  description="Protein choices still available."
+/>
             </div>
 
             {totalGuests > 0 &&
@@ -1128,13 +1126,7 @@ The deposit will be credited toward your total and deducted from the final balan
                   </p>
 
                   <p className="mt-2 text-sm leading-6 text-gray-200">
-                    Your party has {totalGuests} guests. Because
-                    the booking minimum covers{" "}
-                    {MINIMUM_GUEST_SLOTS} guest slots, the{" "}
-                    {complimentaryGuestSlots} unused slots
-                    include{" "}
-                    {complimentaryProteinAllowance} additional
-                    complimentary protein portions.
+                   Your booking includes additional protein portions to meet our $600 minimum booking requirement.
                   </p>
                 </div>
               )}
@@ -1223,7 +1215,7 @@ The deposit will be credited toward your total and deducted from the final balan
 
                 <p className="mt-2 text-sm text-gray-400">
                   Add-ons are charged separately from the $600
-                  minimum booking charge.
+minimum booking total.
                 </p>
               </div>
 
@@ -1531,7 +1523,7 @@ The deposit will be credited toward your total and deducted from the final balan
 
              
               <PriceRow
-                label="Charged Guest Total"
+                label="Minimum Guest Total"
                 value={chargedGuestTotal}
               />
 
@@ -1658,10 +1650,9 @@ The deposit will be credited toward your total and deducted from the final balan
               type="submit"
               className="mt-8 w-full rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-black transition hover:bg-yellow-400"
             >
-              {`SUBMIT BOOKING REQUEST — $${estimatedTotal.toFixed(
-                2,
-              )}`}
-            </button>
+               SUBMIT BOOKING REQUEST — $100 DEPOSIT
+</button>
+          
           </div>
         </form>
       </div>
