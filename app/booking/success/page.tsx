@@ -12,20 +12,41 @@ declare global {
 export default function BookingSuccessPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
+  const sessionId = params.get("session_id");
 
-    // Only send a Google Ads purchase conversion when Stripe
-    // has redirected to this page with a Checkout Session ID.
-    if (!sessionId) return;
+  if (!sessionId) return;
 
-    window.gtag?.("event", "conversion", {
-      send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
-      value: 100,
-      currency: "USD",
-      transaction_id: sessionId,
-    });
-  }, []);
+  const sendPurchaseConversion = () => {
+    if (window.gtag) {
+      window.gtag("event", "conversion", {
+        send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
+        value: 100,
+        currency: "USD",
+        transaction_id: sessionId,
+      });
 
+      return true;
+    }
+
+    return false;
+  };
+
+  // Try immediately
+  if (sendPurchaseConversion()) return;
+
+  // If Google Tag has not loaded yet, retry briefly
+  let attempts = 0;
+
+  const interval = window.setInterval(() => {
+    attempts += 1;
+
+    if (sendPurchaseConversion() || attempts >= 50) {
+      window.clearInterval(interval);
+    }
+  }, 100);
+
+  return () => window.clearInterval(interval);
+}, []);
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-5 py-12 text-white">
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center shadow-2xl md:p-12">
