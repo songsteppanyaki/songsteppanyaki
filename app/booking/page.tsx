@@ -965,6 +965,7 @@ router.push("/booking/payment");
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
   A $100 non-refundable deposit is required to confirm your booking.
+The deposit will be credited toward your total and deducted from the final balance due after your event.
 </p>
               </div>
 
