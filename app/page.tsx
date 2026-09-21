@@ -582,32 +582,55 @@ const nextGallery = () => {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <p className="text-sm font-bold tracking-[0.35em] text-amber-600">
-              CUSTOMER EXPERIENCES
+              CUSTOMER REVIEWS
             </p>
 
             <h2 className="mt-4 text-4xl font-black md:text-5xl">
-              Celebrations to Remember
+              We'd Love to Hear From You
             </h2>
-          </div>
+          </div><div className="mt-12 grid gap-6 md:grid-cols-2">
+  <a
+    href="https://g.page/r/CdUNYsNFeVrDEBM/review"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
+  >
+    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {reviews.map((review) => (
-              <article
-                key={review.name}
-                className="rounded-3xl border border-neutral-200 bg-neutral-50 p-7"
-              >
-                <p className="text-xl tracking-widest text-amber-500">
-                  ★★★★★
-                </p>
+    <h3 className="mt-5 text-2xl font-black">
+      Leave us a review on Google
+    </h3>
 
-                <p className="mt-5 leading-7 text-neutral-700">
-                  “{review.text}”
-                </p>
+    <p className="mt-3 text-neutral-600">
+      Had a great experience with us? We'd love to hear from you.
+    </p>
 
-                <p className="mt-6 font-black">{review.name}</p>
-              </article>
-            ))}
-          </div>
+    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
+      Review us on Google
+    </span>
+  </a>
+
+  <a
+    href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
+  >
+    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
+
+    <h3 className="mt-5 text-2xl font-black">
+      Leave us a review on Yelp
+    </h3>
+
+    <p className="mt-3 text-neutral-600">
+      Had a great experience with us? We’d love to hear from you.
+    </p>
+
+    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
+      Review us on Yelp
+    </span>
+  </a>
+</div>
         </div>
       </section>
 
