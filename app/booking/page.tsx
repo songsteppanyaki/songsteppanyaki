@@ -1091,7 +1091,8 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
               </p>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {false && (
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
               <ProteinSummaryCard
                 label="Actual Guest Protein Portions"
                 value={regularProteinAllowance}
@@ -1118,7 +1119,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
   description="Protein choices still available."
 />
             </div>
-
+)}
             {totalGuests > 0 &&
               complimentaryGuestSlots > 0 && (
                 <div className="mt-5 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
