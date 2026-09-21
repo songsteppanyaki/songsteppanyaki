@@ -1642,11 +1642,19 @@ minimum booking total.
                 details and final pricing.
               </span>
             </label>
-<p className="mt-6 text-sm leading-6 text-slate-400">
-  Chef tips are not included in the estimated total. Tips are voluntary
-  and typically range from 20%-30% of the meal total, based on your
-  satisfaction with the chef's service.
+
+  <p className="mt-4 text-lg md:text-xl font-semibold leading-8 text-yellow-300">
+  Chef tips are not included in the estimated total.
 </p>
+
+<p className="mt-2 text-base md:text-lg leading-7 text-gray-300">
+  Tips are voluntary and typically range from 20%-30% of the meal total, based on your satisfaction with the chef's service.
+</p>
+
+<p className="mt-2 text-lg md:text-xl font-semibold text-yellow-300">
+  Please give tips directly to the chef.
+</p>
+
             <button
               type="submit"
               className="mt-8 w-full rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-black transition hover:bg-yellow-400"
