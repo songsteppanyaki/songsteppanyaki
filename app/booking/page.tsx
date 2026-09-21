@@ -964,7 +964,7 @@ router.push("/booking/payment");
                  $600 minimum food spend applies. Add-ons, travel fees, event setup, and sales tax are charged separately.
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
-  A $100 deposit is required to confirm your booking.
+ A $100 deposit is required to secure your booking once availability is confirmed.
 The deposit will be credited toward your total and deducted from the final balance due after your event.
 Cancellations made at least 48 hours before the event are eligible for a refund, less a 10% cancellation fee. Deposits are non-refundable for cancellations made within 48 hours of the event.
 </p>
