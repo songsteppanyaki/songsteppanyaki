@@ -961,7 +961,7 @@ router.push("/booking/payment");
                 </p>
 
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
-                 $600 minimum food spend applies. Add-ons, travel fees, event setup, and sales tax are charged separately.
+                 A $600 minimum event spend applies to every booking. Add-ons, travel fees, event setup, and sales tax are charged separately.
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
  A $100 deposit is required to secure your booking once availability is confirmed.
@@ -972,7 +972,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
 
               <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-5 py-3">
                 <p className="text-xs uppercase tracking-widest text-gray-400">
-                  Guest Charge
+                  Minimum Event Spend
                 </p>
 
                 <p className="mt-1 text-2xl font-bold text-yellow-400">
@@ -1050,7 +1050,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
               />
 
               <SummaryBox
-                label="Minimum Guest Total"
+                label="Minimum Event Spend"
                 value={`$${chargedGuestTotal.toFixed(2)}`}
                 highlighted
               />
@@ -1059,7 +1059,6 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
             {minimumChargeAdjustment > 0 && (
               <div className="mt-4 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
                 <p className="font-semibold text-yellow-400">
-              A $600 minimum spend applies to every event.
                 </p>
 
                 <p className="mt-2 text-sm leading-6 text-gray-300">
@@ -1082,11 +1081,11 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
               </h2>
 
               <p className="mt-2 text-sm text-gray-400">
-                Adults include 2 protein portions, children
-                ages 5–13 include 1 portion, and children under
-                5 include 0 portion. When the included
-                allowance is full, additional Chicken, Steak,
-                or Shrimp automatically moves to paid Add-ons.
+                Each paid adult includes 2 protein portions. Children
+                ages 5-13 include 1 protein portion. Children under 5
+                do not include a protein portion. When the included
+                allowance is full, additional Chicken, Steak, or Shrimp
+                automatically moves to paid Add-ons.
               </p>
             </div>
 
@@ -1518,15 +1517,12 @@ minimum booking total.
 
             <div className="mt-6 space-y-4">
               <PriceRow
-                label={`Calculated Guest Total (${totalGuests} guests)`}
-                value={calculatedGuestTotal}
+                label={`Food Total (${totalGuests} guests)`}
+                value={chargedGuestTotal}
               />
 
              
-              <PriceRow
-                label="Minimum Guest Total"
-                value={chargedGuestTotal}
-              />
+              
 
               <PriceRow
                 label="Add-ons Total"
@@ -1611,9 +1607,7 @@ minimum booking total.
                 <p className="mt-2 text-sm text-yellow-400">
                   This includes{" "}
                   {complimentaryProteinAllowance} complimentary
-                  protein portions from{" "}
-                  {complimentaryGuestSlots} unused minimum guest
-                  slots.
+                  protein portions included with the minimum event spend.
                 </p>
               )}
             </div>

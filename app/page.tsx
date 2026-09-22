@@ -276,7 +276,7 @@ const nextGallery = () => {
 
               <div>
                 <p className="text-2xl font-black text-amber-400">$600</p>
-                <p className="mt-1 text-xs text-neutral-300">Event Minimum</p>
+                <p className="mt-1 text-xs text-neutral-300">Minimum Event Spend</p>
               </div>
             </div>
           </div>
@@ -538,7 +538,7 @@ const nextGallery = () => {
             />
 
             <PriceCard
-              title="Ages 5–13"
+              title="Ages 5-13"
               price="$30"
               note="Per child guest"
             />
@@ -551,15 +551,17 @@ const nextGallery = () => {
           </div>
 
           <div className="mt-8 rounded-3xl border border-amber-400/30 bg-amber-400/10 p-6 text-center">
-<p className="text-xl font-black">$600 Minimum Package</p>
+<p className="text-xl font-black">$600 Minimum Event Spend</p>
 
 <div className="mt-5 space-y-3 text-lg md:text-xl leading-8 text-neutral-300">
-  <p>Up to 10 guests</p>
-  <p>2 protein portions per guest</p>
+  <p>A $600 minimum event spend applies to every booking.</p>
+  <p>Only $100 to reserve your date.</p>
+  <p>Remaining balance is due at the end of service on the event date.</p>
+  <p>2 protein selections per paid guest</p>
   <p>Choose from Steak, Chicken, and Shrimp</p>
-  <p>10 servings of Salad</p>
-  <p>10 servings of Fried Rice</p>
-  <p>10 servings of Vegetables</p>
+  <p>Salad included</p>
+  <p>Hibachi fried rice included</p>
+  <p>Hibachi vegetables included</p>
 </div>
 
 <p className="mx-auto mt-2 max-w-3xl text-neutral-300">
@@ -575,62 +577,6 @@ const nextGallery = () => {
               CALCULATE YOUR PRICE
             </Link>
           </div>
-        </div>
-      </section>
-
-      <section id="reviews" className="bg-white px-5 py-24 text-neutral-950">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <p className="text-sm font-bold tracking-[0.35em] text-amber-600">
-              CUSTOMER REVIEWS
-            </p>
-
-            <h2 className="mt-4 text-4xl font-black md:text-5xl">
-              We'd Love to Hear From You
-            </h2>
-          </div><div className="mt-12 grid gap-6 md:grid-cols-2">
-  <a
-    href="https://g.page/r/CdUNYsNFeVrDEBM/review"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
-  >
-    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
-
-    <h3 className="mt-5 text-2xl font-black">
-      Leave us a review on Google
-    </h3>
-
-    <p className="mt-3 text-neutral-600">
-      Had a great experience with us? We'd love to hear from you.
-    </p>
-
-    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
-      Review us on Google
-    </span>
-  </a>
-
-  <a
-    href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
-  >
-    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
-
-    <h3 className="mt-5 text-2xl font-black">
-      Leave us a review on Yelp
-    </h3>
-
-    <p className="mt-3 text-neutral-600">
-      Had a great experience with us? We’d love to hear from you.
-    </p>
-
-    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
-      Review us on Yelp
-    </span>
-  </a>
-</div>
         </div>
       </section>
 
@@ -691,6 +637,61 @@ const nextGallery = () => {
           >
             BOOK YOUR EVENT
           </Link>
+        </div>
+      </section>
+ <section id="reviews" className="bg-white px-5 py-24 text-neutral-950">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <p className="text-sm font-bold tracking-[0.35em] text-amber-600">
+              CUSTOMER REVIEWS
+            </p>
+
+            <h2 className="mt-4 text-4xl font-black md:text-5xl">
+              We'd Love to Hear From You
+            </h2>
+          </div><div className="mt-12 grid gap-6 md:grid-cols-2">
+  <a
+    href="https://g.page/r/CdUNYsNFeVrDEBM/review"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
+  >
+    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
+
+    <h3 className="mt-5 text-2xl font-black">
+      Leave us a review on Google
+    </h3>
+
+    <p className="mt-3 text-neutral-600">
+      Had a great experience with us? We'd love to hear from you.
+    </p>
+
+    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
+      Review us on Google
+    </span>
+  </a>
+
+  <a
+    href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-3xl border border-neutral-200 bg-neutral-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
+  >
+    <p className="text-3xl tracking-widest text-amber-500">★★★★★</p>
+
+    <h3 className="mt-5 text-2xl font-black">
+      Leave us a review on Yelp
+    </h3>
+
+    <p className="mt-3 text-neutral-600">
+      Had a great experience with us? We'd love to hear from you.
+    </p>
+
+    <span className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-bold text-white">
+      Review us on Yelp
+    </span>
+  </a>
+</div>
         </div>
       </section>
 
