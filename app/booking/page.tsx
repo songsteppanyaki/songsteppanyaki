@@ -965,7 +965,7 @@ router.push("/booking/payment");
                 </p>
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
  A $100 deposit is required to secure your booking once availability is confirmed.
-The deposit will be credited toward your total and deducted from the final balance due after your event.
+The $100 deposit will be credited toward your total and applied to the remaining balance due at the end of your event.
 Cancellations made at least 48 hours before the event are eligible for a refund, less a 10% cancellation fee. Deposits are non-refundable for cancellations made within 48 hours of the event.
 </p>
               </div>
@@ -1045,7 +1045,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
               />
 
               <SummaryBox
-                label="Calculated Guest Total"
+                label="Food Subtotal"
                 value={`$${calculatedGuestTotal.toFixed(2)}`}
               />
 
@@ -1062,7 +1062,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
                 </p>
 
                 <p className="mt-2 text-sm leading-6 text-gray-300">
-                  Your calculated guest total is below the $600 minimum, so the $600 minimum booking total applies.
+                  Your Food Subtotal is below the $600 minimum, so the $600 minimum event spend applies.
                 </p>
                 <div className="mt-4 pt-4 border-t border-yellow-400/30">
   <p className="mt-1 text-gray-300">
@@ -1083,9 +1083,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
               <p className="mt-2 text-sm text-gray-400">
                 Each paid adult includes 2 protein portions. Children
                 ages 5-13 include 1 protein portion. Children under 5
-                do not include a protein portion. When the included
-                allowance is full, additional Chicken, Steak, or Shrimp
-                automatically moves to paid Add-ons.
+                do not include a protein portion. Once the included protein allowance is used, additional Chicken, Steak, or Shrimp will be charged as add-ons.
               </p>
             </div>
 
@@ -1215,7 +1213,7 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
 
                 <p className="mt-2 text-sm text-gray-400">
                   Add-ons are charged separately from the $600
-minimum booking total.
+minimum event spend.
                 </p>
               </div>
 
@@ -1304,7 +1302,7 @@ minimum booking total.
                 </h2>
 
                 <p className="mt-2 text-sm text-gray-400">
-                  Select either option or choose both. Setup services are charged per guest and added separately to the booking total.
+                  Select either option or choose both. Setup services are charged per guest and added separately to the event spend.
                 </p>
               </div>
 
@@ -1518,7 +1516,7 @@ minimum booking total.
             <div className="mt-6 space-y-4">
               <PriceRow
                 label={`Food Total (${totalGuests} guests)`}
-                value={chargedGuestTotal}
+                value={totalGuests === 0 ? 0 : chargedGuestTotal}
               />
 
              
@@ -1605,9 +1603,8 @@ minimum booking total.
 
               {complimentaryProteinAllowance > 0 && (
                 <p className="mt-2 text-sm text-yellow-400">
-                  This includes{" "}
-                  {complimentaryProteinAllowance} complimentary
-                  protein portions included with the minimum event spend.
+                  Your minimum event spend includes{" "}
+                  {complimentaryProteinAllowance} protein portions.
                 </p>
               )}
             </div>
@@ -1642,7 +1639,7 @@ minimum booking total.
 </p>
 
 <p className="mt-2 text-base md:text-lg leading-7 text-gray-300">
-  Tips are voluntary and typically range from 20%-30% of the meal total, based on your satisfaction with the chef's service.
+  Tips are voluntary. A 20%-30% tip is customary for this type of service and may be given based on your satisfaction with the chef's service.
 </p>
 
 <p className="mt-2 text-lg md:text-xl font-semibold text-yellow-300">
