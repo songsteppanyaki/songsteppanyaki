@@ -131,11 +131,16 @@ useEffect(() => {
       console.error("Failed to load gallery:", error);
     });
 }, []);
+const allGallery = [
+  ...galleryImages.map((item) => ({
+    url: item.src,
+    type: "image",
+  })),
+  ...cloudinaryGallery,
+];
+
 const prevGallery = () => {
-  const galleryLength =
-    cloudinaryGallery.length > 0
-      ? cloudinaryGallery.length
-      : galleryImages.length;
+  const galleryLength = allGallery.length;
 
   setCurrentGallery((prev) =>
     prev === 0 ? galleryLength - 1 : prev - 1
@@ -143,15 +148,13 @@ const prevGallery = () => {
 };
 
 const nextGallery = () => {
-  const galleryLength =
-    cloudinaryGallery.length > 0
-      ? cloudinaryGallery.length
-      : galleryImages.length;
+  const galleryLength = allGallery.length;
 
   setCurrentGallery((prev) =>
     prev === galleryLength - 1 ? 0 : prev + 1
   );
 };
+
   return (
     <main className="min-h-screen overflow-hidden bg-neutral-950 text-white">
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur">
@@ -393,28 +396,21 @@ const nextGallery = () => {
         <div className="relative mx-auto mt-12 w-full max-w-5xl">
   <div className="relative overflow-hidden rounded-3xl bg-black">
 
-   {cloudinaryGallery.length > 0 ? (
-  cloudinaryGallery[currentGallery].type === "video" ? (
-    <video
-      src={cloudinaryGallery[currentGallery].url}
-      controls
-      autoPlay
-      muted
-      loop
-      playsInline
-      className="h-[520px] w-full object-cover"
-    />
-  ) : (
-    <img
-      src={cloudinaryGallery[currentGallery].url}
-      alt="Song Teppanyaki Experience"
-      className="h-[520px] w-full object-cover"
-    />
-  )
+  
+  {allGallery[currentGallery]?.type === "video" ? (
+  <video
+    src={allGallery[currentGallery].url}
+    controls
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="h-[520px] w-full object-cover"
+  />
 ) : (
   <img
-    src={galleryImages[currentGallery].src}
-    alt={galleryImages[currentGallery].alt}
+    src={allGallery[currentGallery]?.url}
+    alt="Song Teppanyaki Experience"
     className="h-[520px] w-full object-cover"
   />
 )}
@@ -469,7 +465,7 @@ const nextGallery = () => {
 </button>
 
     <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 text-sm font-bold text-white">
-      {currentGallery + 1} / {galleryImages.length}
+     {currentGallery + 1} / {allGallery.length}
     </div>
 
   </div>
