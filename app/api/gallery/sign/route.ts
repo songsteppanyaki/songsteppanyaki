@@ -14,6 +14,7 @@ export async function GET() {
     {
       timestamp,
       upload_preset: "song_teppanyaki_gallery",
+      folder: "song-teppanyaki/gallery",
     },
     process.env.CLOUDINARY_API_SECRET!
   );
