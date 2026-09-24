@@ -178,6 +178,7 @@ const handleDelete = async (publicId: string, type: string) => {
         formData.append("timestamp", String(timestamp));
         formData.append("signature", signature);
         formData.append("upload_preset", uploadPreset);
+        formData.append("folder", "song-teppanyaki/gallery");
 
         const uploadResponse = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
