@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 const services = [
@@ -116,16 +116,40 @@ const galleryImages = [
 
 export default function HomePage() {
   const [currentGallery, setCurrentGallery] = useState(0);
-
+const [cloudinaryGallery, setCloudinaryGallery] = useState<
+  { url: string; type: string }[]
+>([]);
+useEffect(() => {
+  fetch("/api/gallery")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.items?.length) {
+        setCloudinaryGallery(data.items);
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to load gallery:", error);
+    });
+}, []);
 const prevGallery = () => {
+  const galleryLength =
+    cloudinaryGallery.length > 0
+      ? cloudinaryGallery.length
+      : galleryImages.length;
+
   setCurrentGallery((prev) =>
-    prev === 0 ? galleryImages.length - 1 : prev - 1
+    prev === 0 ? galleryLength - 1 : prev - 1
   );
 };
 
 const nextGallery = () => {
+  const galleryLength =
+    cloudinaryGallery.length > 0
+      ? cloudinaryGallery.length
+      : galleryImages.length;
+
   setCurrentGallery((prev) =>
-    prev === galleryImages.length - 1 ? 0 : prev + 1
+    prev === galleryLength - 1 ? 0 : prev + 1
   );
 };
   return (
@@ -369,11 +393,32 @@ const nextGallery = () => {
         <div className="relative mx-auto mt-12 w-full max-w-5xl">
   <div className="relative overflow-hidden rounded-3xl bg-black">
 
-    <img
-      src={galleryImages[currentGallery].src}
-      alt={galleryImages[currentGallery].alt}
+   {cloudinaryGallery.length > 0 ? (
+  cloudinaryGallery[currentGallery].type === "video" ? (
+    <video
+      src={cloudinaryGallery[currentGallery].url}
+      controls
+      autoPlay
+      muted
+      loop
+      playsInline
       className="h-[520px] w-full object-cover"
     />
+  ) : (
+    <img
+      src={cloudinaryGallery[currentGallery].url}
+      alt="Song Teppanyaki Experience"
+      className="h-[520px] w-full object-cover"
+    />
+  )
+) : (
+  <img
+    src={galleryImages[currentGallery].src}
+    alt={galleryImages[currentGallery].alt}
+    className="h-[520px] w-full object-cover"
+  />
+)}
+      
 
 <button
   type="button"
