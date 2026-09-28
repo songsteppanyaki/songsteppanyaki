@@ -223,12 +223,34 @@ const nextGallery = () => {
     {/* 联系方式：电脑和手机都显示 */}
     <div className="mt-3 flex flex-col items-center justify-center gap-1 border-t border-white/10 pt-3 text-xs text-neutral-300 sm:flex-row sm:gap-6">
       
-      <a
-        href="tel:6266498696"
-        className="transition hover:text-amber-400"
-      >
-        📞 626-649-8696
-      </a>
+      <div className="flex flex-col items-center">
+  <a
+    href="tel:6266498696"
+    className="transition hover:text-amber-400"
+  >
+    📞 626-649-8696
+  </a>
+
+ <div className="mt-2 flex gap-5 text-3xl font-bold">
+    <a
+      href="https://g.page/r/CdUNYsNFeVrDEBM/review"
+      target="_blank"
+      rel="noopener noreferrer"
+       className="transition text-amber-400 hover:text-amber-300"
+    >
+      Google Reviews
+    </a>
+
+    <a
+      href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="transition hover:text-amber-400"
+    >
+      Yelp Reviews
+    </a>
+  </div>
+</div>
 
       <a
         href="mailto:songsteppanyaki@gmail.com"
