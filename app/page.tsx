@@ -231,7 +231,7 @@ const nextGallery = () => {
     📞 626-649-8696
   </a>
 
- <div className="mt-2 flex gap-5 text-3xl font-bold">
+ <div className="mt-2 flex gap-5 text-4xl font-bold">
     <a
       href="https://g.page/r/CdUNYsNFeVrDEBM/review"
       target="_blank"
