@@ -1623,14 +1623,12 @@ minimum event spend.
               <input
                 type="checkbox"
                 name="acknowledgement"
+                  required
                 className="mt-1 h-4 w-4 accent-yellow-400"
               />
 
-              <span>
-                Optional acknowledgement: I understand that submitting this form does
-                not confirm the booking. Song Teppanyaki will
-                contact me to confirm availability, menu
-                details and final pricing.
+              <span className="text-2xl leading-8">
+                Payment of the deposit confirms your booking and secures your event date. Song Teppanyaki will follow up with you regarding the remaining details.
               </span>
             </label>
 
