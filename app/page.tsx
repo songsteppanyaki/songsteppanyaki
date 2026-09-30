@@ -132,11 +132,11 @@ useEffect(() => {
     });
 }, []);
 const allGallery = [
+  ...cloudinaryGallery,
   ...galleryImages.map((item) => ({
     url: item.src,
     type: "image",
   })),
-  ...cloudinaryGallery,
 ];
 
 const prevGallery = () => {

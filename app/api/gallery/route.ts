@@ -14,6 +14,8 @@ export async function GET() {
         "song-teppanyaki/gallery",
         {
           max_results: 100,
+          direction: "desc",
+          sort_by: "created_at",
         }
       );
 
