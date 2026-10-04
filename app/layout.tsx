@@ -23,17 +23,14 @@ export default function RootLayout({
           src="https://www.googletagmanager.com/gtag/js?id=G-9BH9RBLT3N"
           strategy="afterInteractive"
         />
-
-        <Script id="google-analytics-ads" strategy="afterInteractive">
+        <Script id="google-tag-config" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){window.dataLayer.push(arguments);}
+            window.gtag = gtag;
             gtag('js', new Date());
 
-            // Google Analytics 4
             gtag('config', 'G-9BH9RBLT3N');
-
-            // Google Ads
             gtag('config', 'AW-18454208775');
           `}
         </Script>
