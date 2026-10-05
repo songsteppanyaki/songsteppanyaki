@@ -104,7 +104,13 @@ export async function POST(request: NextRequest) {
         specialRequests: String(
           bookingData?.specialRequests || "",
         ),
+       
+        mediaConsent: String(
+         bookingData?.mediaConsent === true,
+       ),
 
+        mediaConsentText: "Photo and video use for marketing and advertising, including website, social media, and promotional materials.",
+    
         distanceMiles: String(
           bookingData?.distanceMiles || 0,
         ),

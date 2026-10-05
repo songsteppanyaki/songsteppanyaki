@@ -191,6 +191,7 @@ export default function BookingPage() {
   const [distanceError, setDistanceError] = useState("");
   const [salesTaxRate, setSalesTaxRate] = useState<number | null>(null);
   const [promoCode, setPromoCode] = useState("");
+  const [mediaConsent, setMediaConsent] = useState(false);
   const [discount, setDiscount] = useState(0);
 
   const totalGuests = useMemo(() => {
@@ -739,6 +740,7 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
       "dietaryPreferences",
     ),
     specialRequests: formData.get("specialRequests"),
+    mediaConsent,
     subtotal,
     salesTax,
     salesTaxRate,
@@ -1650,7 +1652,29 @@ minimum event spend.
             >
                SUBMIT BOOKING REQUEST — $100 DEPOSIT
 </button>
-          
+          {/* Optional photo and video marketing consent */}
+<div className="mt-5 border-t border-white/10 pt-4">
+  <label className="flex items-start gap-3 text-sm text-gray-300">
+    <input
+  type="checkbox"
+  name="mediaConsent"
+  checked={mediaConsent}
+  onChange={(e) => setMediaConsent(e.target.checked)}
+  className="mt-1 h-4 w-4 shrink-0 accent-yellow-500"
+/>
+    <span>
+      <span className="font-semibold text-white">
+        Photo & Video Marketing Consent (Optional)
+      </span>
+      <span className="mt-1 block leading-relaxed">
+        I agree that Song Teppanyaki may use photos and videos taken during my event for marketing and advertising purposes, including on its website, social media platforms, and promotional materials. I understand that I will not receive compensation for such use.
+      </span>
+      <span className="mt-2 block text-xs text-gray-400">
+        Optional. This consent is not required to complete your booking.
+      </span>
+    </span>
+  </label>
+</div>
           </div>
         </form>
       </div>

@@ -218,7 +218,10 @@ export async function POST(req: NextRequest) {
             <strong>Special Requests:</strong>
             ${metadata.specialRequests || "None"}
           </p>
-
+<p>
+  <strong>Photo & Video Marketing Consent:</strong>
+  {metadata.mediaConsent === "true" ? "Yes" : "No"}
+</p>
           <h3>Pricing</h3>
 
           <p>
