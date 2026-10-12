@@ -92,7 +92,7 @@ const faqs = [
   {
     question: "Does submitting the form confirm the booking?",
     answer:
-      "No. Submitting the form sends a booking request. Song Teppanyaki will contact you to confirm availability, menu details, and final pricing.",
+      "Yes. Your booking is confirmed once you submit the booking form and complete the required deposit payment. You will receive a confirmation of your reservation.",
   },
 ];
 
