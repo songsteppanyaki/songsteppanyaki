@@ -123,9 +123,10 @@ export default function BookingSuccessPage() {
             className="rounded-full bg-yellow-400 px-8 py-4 font-bold text-black transition hover:bg-yellow-300"
           >
             RETURN HOME
-          </Link>
+          </Link>npm run build
 
           <Link
+          
             href="/booking"
             className="rounded-full border border-white/20 px-8 py-4 font-bold transition hover:border-yellow-400 hover:text-yellow-400"
           >
@@ -136,4 +137,3 @@ export default function BookingSuccessPage() {
     </main>
   );
 }
-```
