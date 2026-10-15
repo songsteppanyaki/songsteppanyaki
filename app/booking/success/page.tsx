@@ -37,7 +37,7 @@ export default function BookingSuccessPage() {
 
       window.gtag("event", "conversion", {
         // Verify this label character-by-character in Google Ads.
-        send_to: "AW-18454208775/ClMVCOCJ8f0cEIfC099E",
+        send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
         value: 100,
         currency: "USD",
         transaction_id: sessionId,
