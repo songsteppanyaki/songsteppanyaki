@@ -11,60 +11,82 @@ declare global {
 
 export default function BookingSuccessPage() {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-
-    // No Stripe Checkout session ID, no conversion.
-    if (!sessionId) return;
-
-    // Prevent the same session from being counted repeatedly
-    // in this browser session.
-    const storageKey = `google_ads_purchase_${sessionId}`;
-
-    try {
-      if (window.sessionStorage.getItem(storageKey) === "sent") {
-        return;
-      }
-    } catch {
-      // Continue if sessionStorage is unavailable.
-    }
-
-    let attempts = 0;
+    let cancelled = false;
     let interval: number | undefined;
 
-    const sendPurchaseConversion = () => {
-      if (!window.gtag) return false;
+    async function verifyAndTrackPurchase() {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
 
-      window.gtag("event", "conversion", {
-        // Verify this label character-by-character in Google Ads.
-        send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
-        value: 100,
-        currency: "USD",
-        transaction_id: sessionId,
-      });
+      if (!sessionId || !sessionId.startsWith("cs_")) return;
+
+      const storageKey = `google_ads_purchase_${sessionId}`;
 
       try {
-        window.sessionStorage.setItem(storageKey, "sent");
-      } catch {
-        // Conversion was sent even if storage is unavailable.
-      }
-
-      return true;
-    };
-
-    if (sendPurchaseConversion()) return;
-
-    interval = window.setInterval(() => {
-      attempts += 1;
-
-      if (sendPurchaseConversion() || attempts >= 50) {
-        if (interval !== undefined) {
-          window.clearInterval(interval);
+        if (window.sessionStorage.getItem(storageKey) === "sent") {
+          return;
         }
+      } catch {
+        // Continue if sessionStorage is unavailable.
       }
-    }, 100);
+
+      try {
+        const response = await fetch(
+          `/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}`,
+          { cache: "no-store" }
+        );
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+
+        // Only track a payment verified by Stripe.
+        if (cancelled || result.paid !== true) return;
+
+        let attempts = 0;
+
+        const sendPurchaseConversion = () => {
+          if (cancelled) return true;
+          if (!window.gtag) return false;
+
+          window.gtag("event", "conversion", {
+            send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
+            value: 100,
+            currency: "USD",
+            transaction_id: sessionId,
+          });
+
+          try {
+            window.sessionStorage.setItem(storageKey, "sent");
+          } catch {
+            // Conversion was sent even if storage is unavailable.
+          }
+
+          return true;
+        };
+
+        if (sendPurchaseConversion()) return;
+
+        interval = window.setInterval(() => {
+          attempts += 1;
+
+          if (sendPurchaseConversion() || attempts >= 50) {
+            if (interval !== undefined) {
+              window.clearInterval(interval);
+              interval = undefined;
+            }
+          }
+        }, 100);
+      } catch (error) {
+        console.error("Purchase verification failed:", error);
+      }
+    }
+
+    void verifyAndTrackPurchase();
 
     return () => {
+      cancelled = true;
+
       if (interval !== undefined) {
         window.clearInterval(interval);
       }
@@ -123,10 +145,9 @@ export default function BookingSuccessPage() {
             className="rounded-full bg-yellow-400 px-8 py-4 font-bold text-black transition hover:bg-yellow-300"
           >
             RETURN HOME
-          </Link>npm run build
+          </Link>
 
           <Link
-          
             href="/booking"
             className="rounded-full border border-white/20 px-8 py-4 font-bold transition hover:border-yellow-400 hover:text-yellow-400"
           >
