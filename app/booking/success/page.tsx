@@ -12,41 +12,65 @@ declare global {
 export default function BookingSuccessPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get("session_id");
+    const sessionId = params.get("session_id");
 
-  if (!sessionId) return;
+    // No Stripe Checkout session ID, no conversion.
+    if (!sessionId) return;
 
-  const sendPurchaseConversion = () => {
-    if (window.gtag) {
+    // Prevent the same session from being counted repeatedly
+    // in this browser session.
+    const storageKey = `google_ads_purchase_${sessionId}`;
+
+    try {
+      if (window.sessionStorage.getItem(storageKey) === "sent") {
+        return;
+      }
+    } catch {
+      // Continue if sessionStorage is unavailable.
+    }
+
+    let attempts = 0;
+    let interval: number | undefined;
+
+    const sendPurchaseConversion = () => {
+      if (!window.gtag) return false;
+
       window.gtag("event", "conversion", {
-        send_to: "AW-18454208775/CIMVCOCJ8f0cEIfC099E",
+        // Verify this label character-by-character in Google Ads.
+        send_to: "AW-18454208775/ClMVCOCJ8f0cEIfC099E",
         value: 100,
         currency: "USD",
         transaction_id: sessionId,
       });
 
+      try {
+        window.sessionStorage.setItem(storageKey, "sent");
+      } catch {
+        // Conversion was sent even if storage is unavailable.
+      }
+
       return true;
-    }
+    };
 
-    return false;
-  };
+    if (sendPurchaseConversion()) return;
 
-  // Try immediately
-  if (sendPurchaseConversion()) return;
+    interval = window.setInterval(() => {
+      attempts += 1;
 
-  // If Google Tag has not loaded yet, retry briefly
-  let attempts = 0;
+      if (sendPurchaseConversion() || attempts >= 50) {
+        if (interval !== undefined) {
+          window.clearInterval(interval);
+        }
+      }
+    }, 100);
 
-  const interval = window.setInterval(() => {
-    attempts += 1;
+    return () => {
+      if (interval !== undefined) {
+        window.clearInterval(interval);
+      }
+    };
+  }, []);
 
-    if (sendPurchaseConversion() || attempts >= 50) {
-      window.clearInterval(interval);
-    }
-  }, 100);
-
-  return () => window.clearInterval(interval);
-}, []);
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-5 py-12 text-white">
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center shadow-2xl md:p-12">
@@ -112,3 +136,4 @@ export default function BookingSuccessPage() {
     </main>
   );
 }
+```
