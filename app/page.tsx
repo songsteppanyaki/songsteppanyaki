@@ -33,23 +33,23 @@ const benefits = [
 const steps = [
   {
     number: "1",
-    title: "Choose Your Date",
-    text: "Enter your preferred event date, time, occasion, and address.",
+    title: "Choose Your Date & Menu",
+    text: "Select your event date, time, occasion, guest count, menu, and add-ons.",
   },
   {
     number: "2",
-    title: "Select Your Menu",
-    text: "Choose the number of guests, proteins, add-ons, allergies, and dietary preferences.",
+    title: "Choose How to Book",
+    text: "Book directly with a deposit, or submit a free booking inquiry and discuss your event with our team.",
   },
   {
     number: "3",
-    title: "Receive Confirmation",
-    text: "We review your request and contact you to confirm availability and event details.",
+    title: "Confirm Your Booking",
+    text: "For direct bookings, your reservation is confirmed after the deposit is paid. For inquiries, pay the deposit after our team confirms availability and event details.",
   },
   {
     number: "4",
-    title: "Enjoy the Experience",
-    text: "Our chef arrives at your location and creates an unforgettable hibachi event.",
+    title: "Enjoy Your Hibachi Experience",
+    text: "Our chef arrives at your location and creates an unforgettable private hibachi experience.",
   },
 ];
 
@@ -211,13 +211,22 @@ const nextGallery = () => {
         </a>
       </nav>
 
-      {/* Book Now */}
-      <Link
-        href="/booking"
-        className="rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black transition hover:bg-amber-300"
-      >
-        BOOK NOW
-      </Link>
+       {/* Booking Buttons */}
+      <div className="flex items-center gap-2">
+        <Link
+          href="/booking"
+          className="rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black transition hover:bg-amber-300"
+        >
+          BOOK NOW
+        </Link>
+
+        <Link
+          href="/booking/inquiry"
+          className="rounded-full border border-amber-400 px-4 py-2.5 text-sm font-bold text-amber-400 transition hover:bg-amber-400 hover:text-black"
+        >
+          BOOKING INQUIRY
+        </Link>
+      </div>
     </div>
 
     {/* 联系方式：电脑和手机都显示 */}
@@ -803,12 +812,22 @@ const nextGallery = () => {
         </div>
       </footer>
 
-      <Link
-        href="/booking"
-        className="fixed bottom-5 right-5 z-50 rounded-full bg-amber-400 px-6 py-4 font-black text-black shadow-2xl transition hover:scale-105 hover:bg-amber-300"
-      >
-        BOOK NOW
-      </Link>
+     
+<div className="fixed bottom-5 right-5 z-50 flex items-center gap-2">
+  <Link
+    href="/booking"
+    className="whitespace-nowrap rounded-full bg-amber-400 px-5 py-4 text-sm font-black text-black shadow-2xl transition hover:scale-105 hover:bg-amber-300"
+  >
+    BOOK NOW
+  </Link>
+
+  <Link
+    href="/booking/inquiry"
+    className="whitespace-nowrap rounded-full border border-amber-400 bg-black px-5 py-4 text-sm font-black text-amber-400 shadow-2xl transition hover:scale-105 hover:bg-amber-400 hover:text-black"
+  >
+    INQUIRY
+  </Link>
+</div>
     </main>
   );
 }
