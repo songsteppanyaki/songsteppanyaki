@@ -64,7 +64,7 @@ export default function BookingInquiryPage() {
 // Track Google Ads conversion only after the inquiry API succeeds.
 if (typeof window !== "undefined" && window.gtag) {
   window.gtag("event", "conversion", {
-    send_to: "AW-18454208775/W3WtCMmeq58dEIfC099E",
+    send_to: "AW-18454208775/J3xwCK2fsZ8dEIfC099E",
   });
 }
 
