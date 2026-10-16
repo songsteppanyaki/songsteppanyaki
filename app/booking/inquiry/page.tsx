@@ -4,6 +4,12 @@
 import { useState } from "react";
 import Link from "next/link";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export default function BookingInquiryPage() {
   const [form, setForm] = useState({
     name: "",
@@ -54,9 +60,17 @@ export default function BookingInquiryPage() {
       }
 
       setSuccess(true);
-      setStatus(
-        "Thank you! Your booking inquiry has been submitted successfully. Our team will contact you to confirm availability and details before any deposit is requested."
-      );
+
+// Track Google Ads conversion only after the inquiry API succeeds.
+if (typeof window !== "undefined" && window.gtag) {
+  window.gtag("event", "conversion", {
+    send_to: "AW-18454208775/W3WtCMmeq58dEIfC099E",
+  });
+}
+
+setStatus(
+  "Thank you! Your booking inquiry has been submitted successfully. Our team will contact you to confirm availability and details before any deposit is requested."
+);
     } catch (error) {
       setStatus(
         error instanceof Error
