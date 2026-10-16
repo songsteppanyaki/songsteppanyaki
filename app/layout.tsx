@@ -23,15 +23,17 @@ export default function RootLayout({
           src="https://www.googletagmanager.com/gtag/js?id=G-9BH9RBLT3N"
           strategy="afterInteractive"
         />
+
         <Script id="google-tag-config" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            window.gtag = gtag;
-            gtag('js', new Date());
+            window.gtag = window.gtag || function() {
+              window.dataLayer.push(arguments);
+            };
 
-            gtag('config', 'G-9BH9RBLT3N');
-            gtag('config', 'AW-18454208775');
+            window.gtag('js', new Date());
+            window.gtag('config', 'G-9BH9RBLT3N');
+            window.gtag('config', 'AW-18454208775');
           `}
         </Script>
       </body>
