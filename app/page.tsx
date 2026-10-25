@@ -568,21 +568,26 @@ const nextGallery = () => {
 
     <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
       {[
-        { name: "Fresh Garden Salad", src: "/food/food-1.webp" },
+        { name: "Fresh Garden Salad", src: "/food/food-1.jpg" },
         { name: "Gyoza", src: "/food/food-2.jpg" },
         { name: "Yakisoba Noodles", src: "/food/food-3.jpg" },
         { name: "Sushi Rolls", src: "/food/food-4.jpg" },
-        { name: "Hibachi Tofu", src: "/food/food-5.webp" },
-        { name: "Edamame", src: "/food/food-6.jpeg" },
+        { name: "Hibachi Tofu", src: "/food/food-5.jpg"},
+        { name: "Edamame", src: "/food/food-6.jpg" },
         { name: "Hibachi Fried Rice", src: "/food/food-7.png" },
         { name: "Hibachi Vegetables", src: "/food/food-8.png" },
-        { name: "Hibachi Steak", src: "/food/food-9.png" },
-        { name: "Hibachi Chicken", src: "/food/food-10.png" },
-        { name: "Hibachi Shrimp", src: "/food/food-11.png" },
-        { name: "Hibachi Scallops", src: "/food/food-12.png" },
+        { name: "New York Steak", src: "/food/food-9.jpg" },
+        { name: "Hibachi Chicken", src: "/food/food-10.jpg"},
+        { name: "Hibachi Shrimp", src: "/food/food-11.jpg"},
+        { name: "Hibachi Scallops", src: "/food/food-12.jpg" },
         { name: "Grilled Salmon", src: "/food/food-13.png" },
         { name: "Lobster Tail", src: "/food/food-14.png" },
         { name: "Calamari", src: "/food/food-15.jpg" },
+        { name: "Lamb Chops", src: "/food/food-16.jpg" },
+{ name: "Wagyu Rib Eye", src: "/food/food-17.jpg" },
+{ name: "Tuna", src: "/food/food-18.jpg" },
+{ name: "Ginger Dressing", src: "/food/food-19.jpg" },
+{ name: "Garlic Ginger Soy Sauce", src: "/food/food-20.jpg" },
       ].map((food) => (
         <div key={food.name} className="group">
 
@@ -594,9 +599,49 @@ const nextGallery = () => {
   />
 </div>
           <h3 className="mt-3 text-center text-base font-bold text-white">
-            {food.name}
-          </h3>
+  {food.name}
+</h3>
 
+{food.name === "Hibachi Tofu" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Fresh homemade tofu grilled on the teppanyaki, lightly seasoned.
+  </p>
+)}
+{food.name === "Hibachi Shrimp" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Hibachi Shrimp grilled to perfection with lemon and garlic butter.
+  </p>
+)}
+{food.name === "Lobster Tail" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Mouth-watering Maine Lobster Tails cooked in butter and lemon juice.
+  </p>
+)}
+{food.name === "Hibachi Scallops" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Grilled scallops lightly seasoned and served with the sides of your choice.
+  </p>
+)}
+{food.name === "Lamb Chops" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Roasted rack of lamb seasoned with rosemary, salt and pepper and grilled tableside.
+  </p>
+)}
+{food.name === "New York Steak" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    New York steak, lightly seasoned.
+  </p>
+)}
+{food.name === "Wagyu Rib Eye" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Imported tender rib eye lightly seasoned, cooked in butter.
+  </p>
+)}
+{food.name === "Tuna" && (
+  <p className="mt-2 text-center text-sm leading-6 text-neutral-400">
+    Delicious tuna sliced and grilled on the teppanyaki, seasoned with salt and pepper.
+  </p>
+)}
         </div>
       ))}
     </div>

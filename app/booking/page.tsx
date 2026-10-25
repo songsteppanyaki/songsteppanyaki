@@ -70,6 +70,10 @@ const addOns: PricedItem[] = [
   name: "Extra New York Steak",
   price: 15,
 },
+{
+  name: "Lamb Chops",
+  price: 28,
+},
   {
     name: "Extra Shrimp",
     price: 8,
