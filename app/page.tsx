@@ -323,20 +323,29 @@ const nextGallery = () => {
 
             <div className="mt-10 grid max-w-xl grid-cols-3 gap-5 border-t border-white/20 pt-7">
               <div>
-                <p className="text-2xl font-black text-amber-400">$60</p>
-                <p className="mt-1 text-xs text-neutral-300">Per Adult</p>
+                <p className="text-4xl font-black text-amber-400">$60</p>
+                <p className="mt-1 text-2xl text-neutral-300">Per Adult</p>
               </div>
 
               <div>
-                <p className="text-2xl font-black text-amber-400">$30</p>
-                <p className="mt-1 text-xs text-neutral-300">Ages 5–13</p>
+                <p className="text-4xl font-black text-amber-400">$30</p>
+                <p className="mt-1 text-2xl text-neutral-300">Ages 5-13</p>
               </div>
 
               <div>
-                <p className="text-2xl font-black text-amber-400">$600</p>
-                <p className="mt-1 text-xs text-neutral-300">Minimum Event Spend</p>
+                <p className="text-4xl font-black text-amber-400">$600</p>
+                <p className="mt-1 text-2xl text-neutral-300">Minimum Event Spend</p>
               </div>
             </div>
+            <div className="mt-6 max-w-2xl space-y-4 text-3xl font-black leading-relaxed text-amber-400">
+  <p>
+    * New York Steak, Chicken, Shrimp, Tuna and Tofu — No Additional Charge.
+  </p>
+
+  <p>
+    * Every Meal Comes with Organic Salad, Organic Chicken Fried Rice, and Organic Hibachi Vegetables for Every Guest.
+  </p>
+</div>
           </div>
 
           <div className="hidden lg:block">

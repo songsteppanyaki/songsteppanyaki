@@ -50,9 +50,11 @@ const guestCategories: GuestCategory[] = [
 ];
 
 const proteins = [
+  "New York Steak",
   "Chicken",
-  "Steak",
   "Shrimp",
+  "Tuna",
+  "Tofu",
 ];
 
 const addOns: PricedItem[] = [
@@ -62,75 +64,93 @@ const addOns: PricedItem[] = [
   },
   {
   name: "Filet Mignon Upgrade",
-  price: 10,
+  price: 15,
 },
-  {
-    name: "Extra Steak",
-    price: 8,
-  },
+ {
+  name: "Extra New York Steak",
+  price: 15,
+},
   {
     name: "Extra Shrimp",
     price: 8,
   },
   {
     name: "Lobster Tail",
-    price: 15,
+    price:50,
   },
   {
     name: "Extra Filet Mignon",
-    price: 15,
+    price:30,
   },
   {
     name: "Calamari Steak",
-    price: 8,
+    price:20,
   },
 
   {
     name: "Edamame",
-    price: 5,
+    price:6,
   },
   {
     name: "Extra Fried Rice",
-    price: 3,
+    price:4,
   },
   {
     name: "Extra Vegetables",
-    price: 3,
-  },
-  {
-    name: "Scallops",
-    price: 8,
-  },
-  {
-    name: "Salmon",
-    price: 8,
-  },
-  {
-    name: "Extra Salad",
-    price: 2,
-  },
-  {
-    name: "Gyoza",
-    price: 5,
-  },
-  {
-    name: "Noodles",
     price: 4,
   },
   {
-    name: "Sushi",
-    price: 8,
+    name: "Scallops",
+    price:20,
   },
   {
-    name: "Fried Tofu",
-    price: 6,
+    name: "Salmon",
+    price:20,
   },
+  {
+    name: "Extra Salad",
+    price: 3,
+  },
+  {
+    name: "Gyoza",
+    price: 15,
+  },
+  {
+    name: "Noodles",
+    price: 5,
+  },
+  {
+    name: "Sushi",
+    price: 15,
+  },
+ {
+  name: "Extra Tofu",
+  price: 8,
+},
+{
+  name: "Wagyu Beef",
+  price: 129
+},
+{
+  name: "Halal Steak",
+  price:99,
+},
+{
+  name: "Halal Wagyu Beef",
+  price: 199,
+},
+{
+  name: "Extra Tuna",
+  price:20,
+},
 ];
 
 const proteinToAddOn: Record<string, string> = {
   Chicken: "Extra Chicken",
-  Steak: "Extra Steak",
+  "New York Steak": "Extra New York Steak",
   Shrimp: "Extra Shrimp",
+  Tuna: "Extra Tuna",
+  Tofu: "Extra Tofu",
 };
 
 const allergies = [
@@ -1082,10 +1102,8 @@ Cancellations made at least 48 hours before the event are eligible for a refund,
                 Protein Selection
               </h2>
 
-              <p className="mt-2 text-sm text-gray-400">
-                Each paid adult includes 2 protein portions. Children
-                ages 5-13 include 1 protein portion. Children under 5
-                do not include a protein portion. Once the included protein allowance is used, additional Chicken, Steak, or Shrimp will be charged as add-ons.
+              <p className="mt-2 text-2xl text-gray-400">
+                Choose from New York Steak, Chicken, Shrimp, Tuna and Tofu. Each paid adult includes 2 protein portions. Children ages 5–13 include 1 protein portion. Children under 5 do not include a protein portion. Once the included protein allowance is used, additional Chicken, Steak, or Shrimp will be charged as add-ons.
               </p>
             </div>
 
