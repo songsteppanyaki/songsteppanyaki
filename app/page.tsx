@@ -379,7 +379,43 @@ const nextGallery = () => {
           </div>
         </div>
       </section>
+<div className="mb-12 grid gap-6 md:grid-cols-2">
+  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+    <p className="text-sm font-bold uppercase tracking-widest text-amber-400">
+      Full Halal Upgrade
+    </p>
+    <p className="mt-4 text-4xl font-black text-white">
+      $259 <span className="text-lg font-medium">/ person</span>
+    </p>
+    <p className="mt-4 text-sm leading-6 text-gray-300">
+      Full Halal Dining Experience
+    </p>
+    <a
+      href="/booking"
+      className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
+    >
+      Book Halal Experience
+    </a>
+  </div>
 
+  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+    <p className="text-sm font-bold uppercase tracking-widest text-amber-400">
+      Full Kosher Upgrade
+    </p>
+    <p className="mt-4 text-4xl font-black text-white">
+      $199 <span className="text-lg font-medium">/ person</span>
+    </p>
+    <p className="mt-4 text-sm leading-6 text-gray-300">
+      Full Kosher Dining Experience
+    </p>
+    <a
+      href="/booking"
+      className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
+    >
+      Book Kosher Experience
+    </a>
+  </div>
+</div>
       <section id="services" className="px-5 py-24">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold tracking-[0.35em] text-amber-400">

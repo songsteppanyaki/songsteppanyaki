@@ -143,6 +143,14 @@ const addOns: PricedItem[] = [
   name: "Extra Tuna",
   price:20,
 },
+{
+  name: "Full Halal Upgrade",
+  price: 259,
+},
+{
+  name: "Full Kosher Upgrade",
+  price: 199,
+},
 ];
 
 const proteinToAddOn: Record<string, string> = {
