@@ -1,29 +1,61 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+export const runtime = "nodejs";
 
-export async function GET() {
-  const timestamp = Math.round(new Date().getTime() / 1000);
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
 
-  const signature = cloudinary.utils.api_sign_request(
-    {
+    const title = (searchParams.get("title") || "").trim();
+    const description = (searchParams.get("description") || "").trim();
+
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+
+    if (!apiSecret || !cloudName || !apiKey) {
+      return NextResponse.json(
+        { error: "Cloudinary environment variables are missing." },
+        { status: 500 }
+      );
+    }
+
+    const timestamp = Math.floor(Date.now() / 1000);
+    const uploadPreset = "song_teppanyaki_gallery";
+    const folder = "song-teppanyaki/gallery";
+    const context = `title=${title}|description=${description}`;
+    const displayName = title;
+
+    const uploadParams: Record<string, string | number> = {
       timestamp,
-      upload_preset: "song_teppanyaki_gallery",
-      folder: "song-teppanyaki/gallery",
-    },
-    process.env.CLOUDINARY_API_SECRET!
-  );
+      upload_preset: uploadPreset,
+      folder,
+      context,
+      display_name: displayName,
+    };
 
-  return NextResponse.json({
-    signature,
-    timestamp,
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey: process.env.CLOUDINARY_API_KEY,
-    uploadPreset: "song_teppanyaki_gallery",
-  });
+    const signature = cloudinary.utils.api_sign_request(
+      uploadParams,
+      apiSecret
+    );
+
+    return NextResponse.json({
+      signature,
+      timestamp,
+      cloudName,
+      apiKey,
+      uploadPreset,
+      folder,
+      context,
+      displayName,
+    });
+  } catch (error) {
+    console.error("Cloudinary signature error:", error);
+
+    return NextResponse.json(
+      { error: "Failed to generate upload signature." },
+      { status: 500 }
+    );
+  }
 }
