@@ -468,7 +468,14 @@ const nextGallery = () => {
               hibachi experiences.
             </p>
           </div>
-
+            <div className="mt-8 text-center">
+              <Link
+                href="/gallery"
+                className="inline-block rounded-full bg-amber-400 px-8 py-3 font-black text-black transition hover:bg-amber-300"
+              >
+                VIEW ALL PHOTOS &amp; VIDEOS
+              </Link>
+            </div>
         <div className="relative mx-auto mt-12 w-full max-w-5xl">
   <div className="relative overflow-hidden rounded-3xl bg-black">
 
