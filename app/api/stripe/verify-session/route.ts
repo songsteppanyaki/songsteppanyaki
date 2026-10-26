@@ -1,32 +1,37 @@
-
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
 
-export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
-export async function GET(request: NextRequest) {
-  const sessionId = request.nextUrl.searchParams.get("session_id");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-  if (!sessionId || !sessionId.startsWith("cs_")) {
-    return NextResponse.json(
-      { paid: false, error: "Invalid session ID" },
-      { status: 400 }
-    );
-  }
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceRoleKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-
-  if (!secretKey) {
-    console.error("STRIPE_SECRET_KEY is missing");
-
-    return NextResponse.json(
-      { paid: false, error: "Payment verification unavailable" },
-      { status: 500 }
-    );
-  }
-
+export async function GET(request: Request) {
   try {
-    const stripe = new Stripe(secretKey);
+    const { searchParams } = new URL(request.url);
+    const sessionId = searchParams.get("session_id");
+
+    if (!sessionId) {
+      return NextResponse.json(
+        { error: "Missing session_id" },
+        { status: 400 }
+      );
+    }
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      console.error("Missing Supabase environment variables");
+
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
+
+    // 从 Stripe 服务器确认付款状态
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     const paid =
@@ -34,20 +39,65 @@ export async function GET(request: NextRequest) {
       session.status === "complete" &&
       session.payment_status === "paid";
 
-    return NextResponse.json(
+    if (!paid) {
+      return NextResponse.json({
+        paid: false,
+        sessionId: session.id,
+        monthlyOrderNumber: null,
+      });
+    }
+
+    // 仅在服务器端使用 service_role key
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseServiceRoleKey,
       {
-        paid,
-        sessionId: paid ? session.id : undefined,
-      },
-      {
-        headers: { "Cache-Control": "no-store" },
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
       }
     );
+
+    // 创建订单编号；若此 Stripe Session 已有编号，
+    // 数据库函数会返回原编号，不会重复编号。
+    const { data, error } = await supabase.rpc(
+      "create_monthly_booking_order",
+      {
+        p_stripe_session_id: session.id,
+      }
+    );
+
+    if (error) {
+      console.error("Failed to create monthly order:", error);
+
+      return NextResponse.json(
+        { error: "Unable to retrieve order number" },
+        { status: 500 }
+      );
+    }
+
+    const order = Array.isArray(data) ? data[0] : data;
+
+    if (!order?.result_order_number) {
+      console.error("Order number missing from Supabase response");
+
+      return NextResponse.json(
+        { error: "Order number not available" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      paid: true,
+      sessionId: session.id,
+      monthlyOrderNumber: order.result_order_number,
+    });
   } catch (error) {
-    console.error("Stripe verification failed:", error);
+    console.error("Failed to verify Stripe session:", error);
 
     return NextResponse.json(
-      { paid: false, error: "Unable to verify payment" },
+      { error: "Failed to verify payment" },
       { status: 500 }
     );
   }

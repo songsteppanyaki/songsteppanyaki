@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 declare global {
@@ -10,6 +10,10 @@ declare global {
 }
 
 export default function BookingSuccessPage() {
+  const [monthlyOrderNumber, setMonthlyOrderNumber] = useState<string | null>(
+    null
+  );
+
   useEffect(() => {
     let cancelled = false;
     let interval: number | undefined;
@@ -23,14 +27,6 @@ export default function BookingSuccessPage() {
       const storageKey = `google_ads_purchase_${sessionId}`;
 
       try {
-        if (window.sessionStorage.getItem(storageKey) === "sent") {
-          return;
-        }
-      } catch {
-        // Continue if sessionStorage is unavailable.
-      }
-
-      try {
         const response = await fetch(
           `/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}`,
           { cache: "no-store" }
@@ -40,8 +36,22 @@ export default function BookingSuccessPage() {
 
         const result = await response.json();
 
-        // Only track a payment verified by Stripe.
         if (cancelled || result.paid !== true) return;
+
+        // Display the order number returned by the server.
+        // The verify-session API must return monthlyOrderNumber.
+        if (typeof result.monthlyOrderNumber === "string") {
+          setMonthlyOrderNumber(result.monthlyOrderNumber);
+        }
+
+        // Avoid sending the same Google Ads conversion repeatedly.
+        try {
+          if (window.sessionStorage.getItem(storageKey) === "sent") {
+            return;
+          }
+        } catch {
+          // Continue if sessionStorage is unavailable.
+        }
 
         let attempts = 0;
 
@@ -115,6 +125,22 @@ export default function BookingSuccessPage() {
           We have received your booking request. We will review your event
           details and contact you to confirm availability and final pricing.
         </p>
+
+        {monthlyOrderNumber && (
+          <div className="mt-8 rounded-2xl border border-yellow-400/40 bg-yellow-400/10 p-6">
+            <p className="text-sm font-bold tracking-widest text-yellow-400">
+              YOUR MONTHLY ORDER NUMBER
+            </p>
+
+            <p className="mt-3 text-3xl font-black tracking-wide text-white sm:text-4xl">
+              {monthlyOrderNumber}
+            </p>
+
+            <p className="mt-3 text-sm text-gray-300">
+              Please keep this number for your reference.
+            </p>
+          </div>
+        )}
 
         <div className="mt-8 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-6 text-left">
           <h2 className="text-lg font-bold text-yellow-400">

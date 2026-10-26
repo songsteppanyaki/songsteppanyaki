@@ -35,6 +35,58 @@ export async function POST(req: NextRequest) {
       const email = session.customer_details?.email;
       const metadata = session.metadata || {};
 
+      // Assign a monthly order number only after Stripe confirms payment.
+      // The database RPC is idempotent for each Stripe Checkout Session.
+      let orderNumber = "Pending payment";
+      if (session.payment_status === "paid") {
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseServiceRoleKey =
+          process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+        if (!supabaseUrl || !supabaseServiceRoleKey) {
+          throw new Error(
+            "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variable.",
+          );
+        }
+
+        const orderResponse = await fetch(
+          `${supabaseUrl.replace(/\/$/, "")}/rest/v1/rpc/create_monthly_booking_order`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: supabaseServiceRoleKey,
+              Authorization: `Bearer ${supabaseServiceRoleKey}`,
+            },
+            body: JSON.stringify({
+              p_stripe_session_id: session.id,
+            }),
+          },
+        );
+
+        if (!orderResponse.ok) {
+          const errorDetails = await orderResponse.text();
+          console.error(
+            "Supabase monthly order numbering failed:",
+            orderResponse.status,
+            errorDetails,
+          );
+          throw new Error("Failed to assign monthly booking order number.");
+        }
+
+        const orderRows = await orderResponse.json();
+        if (
+          !Array.isArray(orderRows) ||
+          !orderRows[0]?.result_order_number
+        ) {
+          throw new Error(
+            "Supabase did not return a monthly booking order number.",
+          );
+        }
+
+        orderNumber = String(orderRows[0].result_order_number);
+      }
+
       const guests = JSON.parse(
         metadata.guests || "[]",
       );
@@ -94,6 +146,8 @@ export async function POST(req: NextRequest) {
         subject: "New Booking - Deposit Received",
         html: `
           <h2>New Song Teppanyaki Booking</h2>
+
+          <p><strong>Monthly Order Number:</strong> ${orderNumber}</p>
 
           <h3>Customer</h3>
 
@@ -220,7 +274,7 @@ export async function POST(req: NextRequest) {
           </p>
 <p>
   <strong>Photo & Video Marketing Consent:</strong>
-  {metadata.mediaConsent === "true" ? "Yes" : "No"}
+ ${metadata.mediaConsent === "true" ? "Yes" : "No"}
 </p>
           <h3>Pricing</h3>
 
@@ -286,6 +340,9 @@ export async function POST(req: NextRequest) {
           html: `
             <h2>Thank You for Choosing Song Teppanyaki!</h2>
 
+            <p><strong>Your Monthly Order Number:</strong> ${orderNumber}</p>
+            <p>Please keep this number for your reference. It identifies your booking in our monthly order sequence.</p>
+
             <p>
               We received your booking request and your
               $${depositPaid.toFixed(2)} booking deposit.
@@ -329,8 +386,7 @@ export async function POST(req: NextRequest) {
             </p>
 
             <p>
-              Cancellations made within 48 hours of the scheduled
-              event start time are non-refundable.
+              We allow a one-time reschedule within 12 months of your original reservation at no additional cost, please notify us at least 7 days before the event. If we must cancel your event, we will refund your deposit and any payments made in full.
             </p>
 
             <p>
@@ -402,6 +458,7 @@ export async function POST(req: NextRequest) {
         });
 
         const eventDescription = `
+Monthly Order Number: ${orderNumber}
 Customer: ${metadata.fullName || "N/A"}
 Phone: ${metadata.phone || "N/A"}
 Email: ${metadata.email || email || "N/A"}
@@ -525,7 +582,7 @@ ${metadata.specialRequests || "None"}
                   calendarId,
                   requestBody: {
                     summary:
-                      `Song Teppanyaki - ${
+                      `Song Teppanyaki ${orderNumber} - ${
                         metadata.fullName || "Booking"
                       }`,
 

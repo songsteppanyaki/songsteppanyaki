@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         depositAmount: "100",
 
         depositPolicy:
-         "10% cancellation fee applies if canceled at least 48 hours before the scheduled event start time. Cancellations within 48 hours are non-refundable.",
+         "We require a non-refundable minimum deposit of $100 or more to secure your event date. We allow a one-time reschedule within 12 months of your original reservation at no additional cost, please notify us at least 7 days before the event. If we must cancel your event, we will refund your deposit and any payments made in full.",
 
         fullName: String(bookingData?.fullName || ""),
         phone: String(bookingData?.phone || ""),
