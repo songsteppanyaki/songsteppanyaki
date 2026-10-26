@@ -1000,7 +1000,7 @@ router.push("/booking/payment");
                 <p className="mt-2 text-sm font-semibold text-yellow-400">
  A $100 deposit is required to secure your booking once availability is confirmed.
 The $100 deposit will be credited toward your total and applied to the remaining balance due at the end of your event.
-Cancellations made at least 48 hours before the event are eligible for a refund, less a 10% cancellation fee. Deposits are non-refundable for cancellations made within 48 hours of the event.
+We require a non-refundable minimum deposit of $100 or more to secure your event date. We allow a one-time reschedule within 12 months of your original reservation at no additional cost, please notify us at least 7 days before the event. If we must cancel your event, we will refund your deposit and any payments made in full.
 </p>
               </div>
 

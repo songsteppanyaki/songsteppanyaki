@@ -189,8 +189,7 @@ const bookingData = JSON.parse(savedBooking);
 </p>
 
 <p className="text-sm leading-6 text-gray-300">
-  Cancellations made within 48 hours of the scheduled
-  event start time are non-refundable.
+  We allow a one-time reschedule within 12 months of your original reservation at no additional cost, please notify us at least 7 days before the event. If we must cancel your event, we will refund your deposit and any payments made in full.
 </p>
 
 <p className="text-sm leading-6 text-gray-300">
