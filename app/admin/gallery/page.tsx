@@ -6,7 +6,9 @@ type UploadedFile = {
   name: string;
   url: string;
   type: "image" | "video";
-   publicId: string;
+  publicId: string;
+  title?: string;
+  description?: string;
 };
 
 export default function GalleryAdminPage() {
@@ -60,6 +62,8 @@ const handleLogin = async () => {
   }
 };
   const [files, setFiles] = useState<File[]>([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
@@ -83,6 +87,8 @@ const loadGallery = async () => {
         url: item.url,
         type: item.type === "video" ? "video" : "image",
         publicId: item.publicId,
+        title: item.title || "",
+        description: item.description || "",
       })
     );
 
@@ -179,6 +185,8 @@ const handleDelete = async (publicId: string, type: string) => {
         formData.append("signature", signature);
         formData.append("upload_preset", uploadPreset);
         formData.append("folder", "song-teppanyaki/gallery");
+        formData.append("context", `title=${title.trim() || file.name.replace(/\\.[^/.]+$/, "")}|description=${description.trim()}`);
+        formData.append("display_name", title.trim() || file.name.replace(/\\.[^/.]+$/, ""));
 
         const uploadResponse = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
@@ -200,12 +208,16 @@ const handleDelete = async (publicId: string, type: string) => {
           type: file.type.startsWith("video/")
             ? "video"
             : "image",
-              publicId: result.public_id,
+          publicId: result.public_id,
+          title: title.trim() || file.name.replace(/\\.[^/.]+$/, ""),
+          description: description.trim(),
         });
       }
 
       setUploadedFiles(uploaded);
       setFiles([]);
+      setTitle("");
+      setDescription("");
       setMessage("Upload completed successfully.");
     } catch (error) {
       console.error(error);
@@ -314,6 +326,31 @@ if (!authenticated) {
           <p className="mt-3 text-sm text-neutral-400">
             Select photos or videos and upload them to your gallery.
           </p>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-semibold text-neutral-200">
+              Display Title
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="e.g. Outdoor Hibachi Party"
+                maxLength={120}
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-amber-400"
+              />
+            </label>
+            <label className="block text-sm font-semibold text-neutral-200 sm:col-span-2">
+              Description
+              <textarea
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                placeholder="Write a short description for customers..."
+                maxLength={500}
+                rows={3}
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-amber-400"
+              />
+            </label>
+          </div>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <label

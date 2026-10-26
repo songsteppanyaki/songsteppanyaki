@@ -23,6 +23,8 @@ export async function GET() {
       url: resource.secure_url,
       publicId: resource.public_id,
       type: resource.resource_type,
+      title: resource.context?.custom?.title || resource.display_name || resource.public_id.split("/").pop(),
+      description: resource.context?.custom?.description || "",
       format: resource.format,
       width: resource.width,
       height: resource.height,
