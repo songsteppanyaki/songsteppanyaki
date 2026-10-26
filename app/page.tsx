@@ -416,6 +416,37 @@ const nextGallery = () => {
     </a>
   </div>
 </div>
+{/* Monthly Promotion Banner */}
+<section className="px-5 pb-12">
+  <div className="mx-auto max-w-7xl">
+    <div className="rounded-2xl border border-amber-400/50 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 px-6 py-8 text-center shadow-lg shadow-amber-400/5 md:px-12 md:py-10">
+      <p className="text-sm font-bold uppercase tracking-[0.3em] text-amber-400">
+        Monthly Special
+      </p>
+
+      <h2 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
+        20% OFF FOOD
+      </h2>
+
+      <p className="mx-auto mt-4 max-w-2xl text-base font-semibold text-amber-300 sm:text-lg">
+        Only for the first 8 paid orders each month!
+      </p>
+
+      <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-zinc-300 sm:text-base">
+        Orders are ranked by successful payment time. The discount applies to
+        food charges only; other fees are excluded. Our customer service team
+        will email you to confirm eligibility and the final discount amount.
+      </p>
+
+      <a
+        href="/booking"
+        className="mt-6 inline-flex rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
+      >
+        Book Now
+      </a>
+    </div>
+  </div>
+</section>
       <section id="services" className="px-5 py-24">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold tracking-[0.35em] text-amber-400">
