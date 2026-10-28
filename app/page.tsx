@@ -194,6 +194,12 @@ const nextGallery = () => {
           href="#pricing"
         >
           Pricing
+          <Link
+  href="/estimate"
+  className="text-2xl font-bold transition hover:text-amber-400"
+>
+  Estimate
+</Link>
         </a>
 
         <a
