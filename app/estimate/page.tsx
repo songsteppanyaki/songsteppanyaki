@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { jsPDF } from "jspdf";
 import {
   Dispatch,
   SetStateAction,
@@ -192,6 +193,7 @@ export default function EstimatePage() {
   const [salesTaxRate, setSalesTaxRate] = useState<number | null>(null);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [promoMessage, setPromoMessage] = useState(""); 
 
   const totalGuests = useMemo(() => {
     return guestCategories.reduce((total, category) => {
@@ -208,14 +210,14 @@ export default function EstimatePage() {
   }, [guestQuantities]);
 
   const chargedGuestTotal = Math.max(
-    calculatedGuestTotal,
-    MINIMUM_BOOKING_CHARGE,
-  );
+  calculatedGuestTotal,
+  MINIMUM_BOOKING_CHARGE,
+);
 
-  const minimumChargeAdjustment = Math.max(
-    0,
-    MINIMUM_BOOKING_CHARGE - calculatedGuestTotal,
-  );
+const minimumChargeAdjustment = Math.max(
+  0,
+  MINIMUM_BOOKING_CHARGE - calculatedGuestTotal,
+);
 
   /*
    * 不足 10 人的空缺名额。
@@ -295,7 +297,12 @@ const totalIncludedProteinAllowance = Math.max(
           : "No Event Setup";
 
   const subtotal =
-  chargedGuestTotal + addOnsTotal + travelFee + setupFee;
+  Math.max(
+    calculatedGuestTotal + addOnsTotal,
+    MINIMUM_BOOKING_CHARGE,
+  ) +
+  travelFee +
+  setupFee;
 
 const salesTax =
     salesTaxRate === null ? 0 : subtotal * salesTaxRate;
@@ -606,6 +613,195 @@ const salesTax =
     );
   }
 
+  const downloadPDFQuote = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(20);
+  doc.text("SONG TEPPANYAKI", 20, 20);
+
+  doc.setFontSize(14);
+  doc.text("Estimated Event Quote", 20, 32);
+
+  doc.setFontSize(11);
+
+  let y = 45;
+
+  doc.text(`Event Address: ${eventAddress || "Not provided"}`, 20, y);
+  y += 8;
+
+  doc.text(`City: ${eventCity || "Not provided"}`, 20, y);
+  y += 8;
+
+  doc.text(`ZIP Code: ${eventZipCode || "Not provided"}`, 20, y);
+  y += 8;
+
+  doc.text(`Total Guests: ${totalGuests}`, 20, y);
+  y += 12;
+
+  doc.setFontSize(13);
+  // Protein Selection
+doc.setFontSize(13);
+doc.text("Protein Selection", 20, y);
+y += 9;
+
+doc.setFontSize(11);
+
+const selectedProteins = Object.entries(proteinQuantities).filter(
+  ([, quantity]) => quantity > 0,
+);
+
+if (selectedProteins.length === 0) {
+  doc.text("No proteins selected", 20, y);
+  y += 7;
+} else {
+  selectedProteins.forEach(([name, quantity]) => {
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.text(`${name}: ${quantity} portions`, 20, y);
+    y += 7;
+  });
+}
+
+y += 5;
+
+// Add-on Selection
+doc.setFontSize(13);
+doc.text("Add-on Selection", 20, y);
+y += 9;
+
+doc.setFontSize(11);
+
+const selectedAddOns = Object.entries(addOnQuantities).filter(
+  ([, quantity]) => quantity > 0,
+);
+
+if (selectedAddOns.length === 0) {
+  doc.text("No add-ons selected", 20, y);
+  y += 7;
+} else {
+  selectedAddOns.forEach(([name, quantity]) => {
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.text(`${name}: ${quantity}`, 20, y);
+    y += 7;
+  });
+}
+
+y += 12;
+
+// Price Summary
+doc.setFontSize(13);
+doc.text("Price Summary", 20, y);
+y += 9;
+
+doc.setFontSize(11);
+  doc.text("Price Summary", 20, y);
+  y += 9;
+
+  doc.setFontSize(11);
+
+  doc.text(`Guest Charges: $${calculatedGuestTotal.toFixed(2)}`, 20, y);
+  y += 8;
+
+  doc.text(`Add-ons: $${addOnsTotal.toFixed(2)}`, 20, y);
+y += 8;
+
+const pdfMinimumChargeAdjustment = Math.max(
+  0,
+  MINIMUM_BOOKING_CHARGE -
+    calculatedGuestTotal -
+    addOnsTotal,
+);
+
+doc.text(
+  `Minimum Charge Adjustment: $${pdfMinimumChargeAdjustment.toFixed(2)}`,
+  20,
+  y,
+);
+y += 8;
+
+doc.text(`Event Setup: $${setupFee.toFixed(2)}`, 20, y);
+y += 8;
+
+doc.text(`Travel Fee: $${travelFee.toFixed(2)}`, 20, y);
+y += 8;
+
+doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 20, y);
+y += 8;
+
+doc.text(
+  `Sales Tax Rate: ${
+    salesTaxRate === null
+      ? "Not calculated"
+      : `${(salesTaxRate * 100).toFixed(3)}%`
+  }`,
+  20,
+  y,
+);
+y += 8;
+
+doc.text(`Sales Tax: $${salesTax.toFixed(2)}`, 20, y);
+y += 8;
+
+doc.text(`Discount: -$${discount.toFixed(2)}`, 20, y);
+y += 8;
+
+doc.setFontSize(14);
+doc.text(`Estimated Total: $${estimatedTotal.toFixed(2)}`, 20, y);
+y += 12;
+
+doc.setFontSize(12);
+doc.text("Optional Chef Tip (Not Included)", 20, y);
+y += 8;
+
+doc.setFontSize(11);
+
+doc.text(
+  `20% Tip: $${(estimatedTotal * 0.2).toFixed(2)}`,
+  20,
+  y,
+);
+y += 7;
+
+doc.text(
+  `25% Tip: $${(estimatedTotal * 0.25).toFixed(2)}`,
+  20,
+  y,
+);
+y += 7;
+
+doc.text(
+  `30% Tip: $${(estimatedTotal * 0.3).toFixed(2)}`,
+  20,
+  y,
+);
+y += 10;
+
+doc.setFontSize(9);
+doc.text(
+  "Tips are voluntary and are not included in the estimated total.",
+  20,
+  y,
+  { maxWidth: 170 },
+);
+y += 8;
+
+  doc.setFontSize(9);
+  doc.text(
+    "This is an estimate. Final pricing may change based on event details.",
+    20,
+    y,
+    { maxWidth: 170 },
+  );
+
+  doc.save("Song-Teppanyaki-Quote.pdf");
+};
 
   return (
     <main className="min-h-screen bg-black px-5 py-10 text-white md:px-8">
@@ -1206,18 +1402,43 @@ minimum event spend.
     <button
       type="button"
       onClick={() => {
-    if (promoCode.trim().toUpperCase() === "FIRST50") {
-      setDiscount(50);
-      alert("Promo code applied!");
-    } else {
-      setDiscount(0);
-      alert("Invalid promo code");
-    }
+    const code = promoCode.trim().toUpperCase();
+
+if (code === "FIRST50") {
+  setDiscount(50);
+  setPromoMessage("Promo code applied! $50 off.");
+} else if (/^(100|[1-9]?\d)%$/.test(code)) {
+  const percentage = Number(code.replace("%", ""));
+
+  if (percentage <= 0 || percentage >= 100) {
+    setDiscount(0);
+    setPromoMessage("Enter a discount between 1% and 99%.");
+  } else {
+    const eligibleAmount = Math.max(
+      0,
+      subtotal - travelFee - setupFee,
+    );
+
+    setDiscount(
+      Math.round(eligibleAmount * (percentage / 100) * 100) / 100,
+    );
+
+    setPromoMessage(`${percentage}% discount applied!`);
+  }
+} else {
+  setDiscount(0);
+  setPromoMessage("Invalid promo code. Try FIRST50 or 20%.");
+}
   }}
       className="px-5 rounded-lg bg-yellow-400 text-black font-semibold"
     >
       Apply
     </button>
+    {promoMessage && (
+  <p className="mt-2 text-sm text-yellow-400">
+    {promoMessage}
+  </p>
+)}
   </div>
 </div>
               <PriceRow
@@ -1277,6 +1498,13 @@ minimum event spend.
               <p className="mt-2 text-sm text-gray-300">
                 Tips are voluntary and are not included in the estimated total. A customary tip is 20%–30% based on your satisfaction with the chef’s service. Please give tips directly to the chef.
               </p>
+              <button
+  type="button"
+  onClick={downloadPDFQuote}
+  className="mt-6 w-full rounded-xl bg-yellow-400 px-6 py-4 font-bold text-black transition hover:bg-yellow-300"
+>
+  Download PDF Quote
+</button>
               <p className="mt-3 text-sm text-gray-200">
                 Suggested tip range: ${Math.round(estimatedTotal * 0.2).toFixed(2)}–${Math.round(estimatedTotal * 0.3).toFixed(2)}
               </p>
