@@ -1432,7 +1432,42 @@ minimum event spend.
                 </p>
               </div>
             )}
+            {/* Event Setup Photos */}
+            <div className="mt-6">
+              <h3 className="mb-2 text-xl font-bold text-yellow-400">
+                Event Setup Inspiration
+              </h3>
 
+              <p className="mb-4 text-sm text-gray-400">
+                See our event setup options and get inspired for your celebration.
+              </p>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="overflow-hidden rounded-xl border border-white/10">
+                  <img
+                    src="/images/event-setup-1.jpg"
+                    alt="Event setup with tables and chairs"
+                    className="h-64 w-full object-cover"
+                  />
+                </div>
+
+                <div className="overflow-hidden rounded-xl border border-white/10">
+                  <img
+                    src="/images/event-setup-2.jpg"
+                    alt="Event setup with tableware and flowers"
+                    className="h-64 w-full object-cover"
+                  />
+                </div>
+
+                <div className="overflow-hidden rounded-xl border border-white/10">
+                  <img
+                    src="/images/event-setup-3.jpg"
+                    alt="Event setup with table lighting"
+                    className="h-64 w-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               <SummaryBox
                 label="Selected Setup"
