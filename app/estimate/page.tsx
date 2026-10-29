@@ -635,7 +635,25 @@ const salesTax =
   doc.text(`ZIP Code: ${eventZipCode || "Not provided"}`, 20, y);
   y += 8;
 
-  doc.text(`Total Guests: ${totalGuests}`, 20, y);
+   doc.text(`Total Guests: ${totalGuests}`, 20, y);
+  y += 12;
+
+  // Included Meal Package
+  doc.setFontSize(13);
+  doc.text("Included Meal Package", 20, y);
+  y += 9;
+
+  doc.setFontSize(11);
+  doc.text(`Salad: ${totalGuests} servings`, 20, y);
+  y += 7;
+
+  doc.text(`Fried Rice: ${totalGuests} servings`, 20, y);
+  y += 7;
+
+  doc.text(`Grilled Vegetables: ${totalGuests} servings`, 20, y);
+  y += 7;
+
+  doc.text("Delicious Hibachi Sauces: Included", 20, y);
   y += 12;
 
   doc.setFontSize(13);
@@ -799,7 +817,42 @@ y += 8;
     y,
     { maxWidth: 170 },
   );
+   // Contact Information
+  y += 8;
 
+  // Start a new page if there is not enough space
+  if (y > 240) {
+    doc.addPage();
+    y = 25;
+  }
+
+  doc.setFontSize(13);
+  doc.text("Contact & Payment Information", 20, y);
+  y += 9;
+
+  doc.setFontSize(10);
+  doc.text("Email: songsteppanyaki@gmail.com", 20, y);
+  y += 7;
+
+  doc.text("Phone: 626-649-8696", 20, y);
+  y += 7;
+
+  doc.text("Phone: 626-830-2267", 20, y);
+  y += 9;
+
+  doc.setFontSize(12);
+  doc.text("Credit Card Payment:", 20, y);
+  y += 7;
+
+  doc.setFontSize(9);
+const paymentUrl = "https://buy.stripe.com/5kQcN69aK6S4g9CgjH83C00";
+
+doc.textWithLink("Pay by Credit Card", 20, y, { url: paymentUrl });
+y += 7;
+
+doc.setFontSize(8);
+doc.text(paymentUrl, 20, y);
+y += 7;
   doc.save("Song-Teppanyaki-Quote.pdf");
 };
 
