@@ -189,18 +189,20 @@ const nextGallery = () => {
           Gallery
         </a>
 
-        <a
-          className="transition hover:text-amber-400"
-          href="#pricing"
-        >
-          Pricing
-          <Link
+
+<a
+  href="/#pricing"
+  className="transition hover:text-amber-400"
+>
+  Pricing
+</a>
+
+<Link
   href="/estimate"
-  className="text-2xl font-bold transition hover:text-amber-400"
+  className="transition hover:text-amber-400"
 >
   Estimate
 </Link>
-        </a>
 
         <a
           className="transition hover:text-amber-400"
