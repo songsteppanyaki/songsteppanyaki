@@ -949,21 +949,30 @@ const nextGallery = () => {
       </footer>
 
      
-<div className="fixed bottom-5 right-5 z-50 flex items-center gap-2">
+```tsx
+<div className="fixed bottom-5 left-5 right-5 z-50 flex items-center justify-between gap-2 sm:left-auto sm:right-5 sm:justify-end">
+  <Link
+    href="/estimate"
+    className="whitespace-nowrap rounded-full border border-amber-400 bg-black px-4 py-4 text-sm font-black text-amber-400 shadow-2xl transition hover:bg-amber-400 hover:text-black"
+  >
+    ESTIMATE
+  </Link>
+
   <Link
     href="/booking"
-    className="whitespace-nowrap rounded-full bg-amber-400 px-5 py-4 text-sm font-black text-black shadow-2xl transition hover:scale-105 hover:bg-amber-300"
+    className="whitespace-nowrap rounded-full bg-amber-400 px-4 py-4 text-sm font-black text-black shadow-2xl transition hover:scale-105 hover:bg-amber-300"
   >
     BOOK NOW
   </Link>
 
   <Link
     href="/booking/inquiry"
-    className="whitespace-nowrap rounded-full border border-amber-400 bg-black px-5 py-4 text-sm font-black text-amber-400 shadow-2xl transition hover:scale-105 hover:bg-amber-400 hover:text-black"
+    className="whitespace-nowrap rounded-full border border-amber-400 bg-black px-4 py-4 text-sm font-black text-amber-400 shadow-2xl transition hover:scale-105 hover:bg-amber-400 hover:text-black"
   >
     INQUIRY
   </Link>
 </div>
+```
     </main>
   );
 }
