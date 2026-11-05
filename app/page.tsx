@@ -237,46 +237,46 @@ const nextGallery = () => {
       </div>
     </div>
 
-    {/* 联系方式：电脑和手机都显示 */}
-    <div className="mt-3 flex flex-col items-center justify-center gap-1 border-t border-white/10 pt-3 text-xs text-neutral-300 sm:flex-row sm:gap-6">
-      
-      <div className="flex flex-col items-center">
+{/* 联系方式 + Reviews */}
+<div className="flex flex-col items-center justify-center gap-3 py-2 text-neutral-300 lg:flex-row lg:flex-nowrap lg:gap-6">
+
+  {/* Google Reviews */}
+  <a
+    href="https://g.page/r/CdUNYsNFeVrDEBM/review"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-lg font-bold text-amber-400 transition hover:text-amber-300 lg:text-xl"
+  >
+    Google Reviews
+  </a>
+
+  {/* Yelp Reviews */}
+  <a
+    href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-lg font-bold transition hover:text-amber-400 lg:text-xl"
+  >
+    Yelp Reviews
+  </a>
+
+  {/* 电话 */}
   <a
     href="tel:6266498696"
-      className="text-xl font-bold transition hover:text-amber-400"
+    className="text-lg font-bold transition hover:text-amber-400 lg:text-xl"
   >
     📞 626-649-8696
   </a>
 
- <div className="mt-2 flex gap-5 text-xl md:text-5xl font-bold">
-    <a
-      href="https://g.page/r/CdUNYsNFeVrDEBM/review"
-      target="_blank"
-      rel="noopener noreferrer"
-       className="transition text-amber-400 hover:text-amber-300"
-    >
-      Google Reviews
-    </a>
+  {/* Email */}
+  <a
+    href="mailto:songsteppanyaki@gmail.com"
+    className="text-lg font-bold transition hover:text-amber-400 lg:text-xl"
+  >
+    ✉ songsteppanyaki@gmail.com
+  </a>
 
-    <a
-      href="https://www.yelp.com/writeareview/biz/GrlEPFSJ9j_mQsvL02ONDA?return_url=%2Fbiz%2FGrlEPFSJ9j_mQsvL02ONDA&review_origin=biz-details-war-button"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="transition hover:text-amber-400"
-    >
-      Yelp Reviews
-    </a>
-  </div>
 </div>
-
-      <a
-        href="mailto:songsteppanyaki@gmail.com"
-       className="text-xl font-bold transition hover:text-amber-400"
-      >
-        ✉ songsteppanyaki@gmail.com
-      </a>
-
-    </div>
 
   </div>
 </header>
