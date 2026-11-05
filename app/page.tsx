@@ -331,18 +331,18 @@ const nextGallery = () => {
 
             <div className="mt-10 grid max-w-xl grid-cols-3 gap-5 border-t border-white/20 pt-7">
               <div>
-                <p className="text-4xl font-black text-amber-400">$60</p>
-                <p className="mt-1 text-2xl text-neutral-300">Per Adult</p>
+                <p className="text-4xl font-black text-white">$60</p>
+                <p className="mt-1 text-2xl text-white">Per Adult</p>
               </div>
 
               <div>
-                <p className="text-4xl font-black text-amber-400">$30</p>
-                <p className="mt-1 text-2xl text-neutral-300">Ages 5-13</p>
+                <p className="text-4xl font-black text-white">$30</p>
+                <p className="mt-1 text-2xl text-white">Ages 5-13</p>
               </div>
 
               <div>
-                <p className="text-4xl font-black text-amber-400">$600</p>
-                <p className="mt-1 text-2xl text-neutral-300">Minimum Event Spend</p>
+                <p className="text-4xl font-black text-white">$600</p>
+                <p className="mt-1 text-2xl text-white">Minimum Event Spend</p>
               </div>
             </div>
             <div className="mt-6 max-w-2xl space-y-4 text-3xl font-black leading-relaxed text-amber-400">
@@ -389,10 +389,10 @@ const nextGallery = () => {
       </section>
 <div className="mb-12 grid gap-6 md:grid-cols-2">
   <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
-    <p className="text-sm font-bold uppercase tracking-widest text-amber-400">
+    <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Halal Upgrade
     </p>
-    <p className="mt-4 text-4xl font-black text-white">
+    <p className="mt-4 text-xl font-black text-white">
       $259 <span className="text-lg font-medium">/ person</span>
     </p>
     <p className="mt-4 text-sm leading-6 text-gray-300">
@@ -406,11 +406,11 @@ const nextGallery = () => {
     </a>
   </div>
 
-  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
-    <p className="text-sm font-bold uppercase tracking-widest text-amber-400">
+  <div className="rounded-6xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+    <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Kosher Upgrade
     </p>
-    <p className="mt-4 text-4xl font-black text-white">
+    <p className="mt-4 text-xl font-black text-white">
       $199 <span className="text-lg font-medium">/ person</span>
     </p>
     <p className="mt-4 text-sm leading-6 text-gray-300">
