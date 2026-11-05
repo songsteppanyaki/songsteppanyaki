@@ -165,16 +165,16 @@ const nextGallery = () => {
 
       {/* Logo */}
       <Link href="/" className="group shrink-0">
-        <p className="text-xl font-black tracking-[0.25em]">
+        <p className="text-3xl font-black tracking-[0.25em]">
           SONG
         </p>
-        <p className="text-[10px] tracking-[0.35em] text-amber-400">
+        <p className="text-xs font-semibold tracking-[0.35em] text-amber-400">
           TEPPANYAKI
         </p>
       </Link>
 
       {/* Navigation */}
-      <nav className="hidden items-center gap-7 text-sm font-semibold md:flex">
+      <nav className="hidden items-center gap-8 text-base font-bold md:flex">
         <a
           className="transition hover:text-amber-400"
           href="#services"
