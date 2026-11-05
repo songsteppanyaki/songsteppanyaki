@@ -174,7 +174,7 @@ const nextGallery = () => {
       </Link>
 
       {/* Navigation */}
-      <nav className="hidden items-center gap-8 text-base font-bold md:flex">
+      <nav className="hidden items-center gap-8 text-2xl font-bold md:flex">
         <a
           className="transition hover:text-amber-400"
           href="#services"
