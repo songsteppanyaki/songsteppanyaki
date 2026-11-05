@@ -243,12 +243,12 @@ const nextGallery = () => {
       <div className="flex flex-col items-center">
   <a
     href="tel:6266498696"
-    className="transition hover:text-amber-400"
+      className="text-xl font-bold transition hover:text-amber-400"
   >
     📞 626-649-8696
   </a>
 
- <div className="mt-2 flex gap-5 text-5xl font-bold">
+ <div className="mt-2 flex gap-5 text-xl md:text-5xl font-bold">
     <a
       href="https://g.page/r/CdUNYsNFeVrDEBM/review"
       target="_blank"
@@ -271,7 +271,7 @@ const nextGallery = () => {
 
       <a
         href="mailto:songsteppanyaki@gmail.com"
-        className="transition hover:text-amber-400"
+       className="text-xl font-bold transition hover:text-amber-400"
       >
         ✉ songsteppanyaki@gmail.com
       </a>
