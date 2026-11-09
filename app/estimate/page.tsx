@@ -296,18 +296,42 @@ const totalIncludedProteinAllowance = Math.max(
           ? "Tableware, Flowers & Table Lighting"
           : "No Event Setup";
 
-  const subtotal =
-  Math.max(
-    calculatedGuestTotal + addOnsTotal,
-    MINIMUM_BOOKING_CHARGE,
-  ) +
+
+const foodSubtotal = Math.max(
+  calculatedGuestTotal + addOnsTotal,
+  MINIMUM_BOOKING_CHARGE,
+);
+
+// Discount applies only to food
+const appliedDiscount = Math.min(
+  Math.max(discount, 0),
+  foodSubtotal,
+);
+
+const discountedFoodSubtotal =
+  foodSubtotal - appliedDiscount;
+
+// Travel and setup fees are not discounted
+const subtotal =
+  discountedFoodSubtotal +
   travelFee +
   setupFee;
 
+// Sales tax
 const salesTax =
-    salesTaxRate === null ? 0 : subtotal * salesTaxRate;
+  salesTaxRate === null ? 0 : subtotal * salesTaxRate;
 
-  const estimatedTotal = subtotal + salesTax - discount;
+// Final estimated total
+const estimatedTotal = subtotal + salesTax;
+// Tip calculation based on the original amount before discount
+const tipBase =
+  foodSubtotal +
+  travelFee +
+  setupFee +
+  (salesTaxRate === null
+    ? 0
+    : (foodSubtotal + travelFee + setupFee) * salesTaxRate);
+
 
   const completeEventAddress = [
     eventAddress.trim(),
@@ -767,13 +791,19 @@ y += 8;
 doc.text(`Sales Tax: $${salesTax.toFixed(2)}`, 20, y);
 y += 8;
 
-doc.text(`Discount: -$${discount.toFixed(2)}`, 20, y);
+doc.text(`Discount: -$${appliedDiscount.toFixed(2)}`, 20, y);
 y += 8;
 
 doc.setFontSize(14);
 doc.text(`Estimated Total: $${estimatedTotal.toFixed(2)}`, 20, y);
 y += 12;
+// Ensure the complete tip section fits on the same page
+const pageHeight = doc.internal.pageSize.getHeight();
 
+if (y + 50 > pageHeight - 15) {
+  doc.addPage();
+  y = 20;
+}
 doc.setFontSize(12);
 doc.text("Optional Chef Tip (Not Included)", 20, y);
 y += 8;
@@ -781,21 +811,21 @@ y += 8;
 doc.setFontSize(11);
 
 doc.text(
-  `20% Tip: $${(estimatedTotal * 0.2).toFixed(2)}`,
+  `20% Tip: $${(tipBase * 0.2).toFixed(2)}`,
   20,
   y,
 );
 y += 7;
 
 doc.text(
-  `25% Tip: $${(estimatedTotal * 0.25).toFixed(2)}`,
+  `25% Tip: $${(tipBase * 0.25).toFixed(2)}`,
   20,
   y,
 );
 y += 7;
 
 doc.text(
-  `30% Tip: $${(estimatedTotal * 0.3).toFixed(2)}`,
+  `30% Tip: $${(tipBase * 0.3).toFixed(2)}`,
   20,
   y,
 );
@@ -1205,8 +1235,8 @@ y += 7;
                 </h2>
 
                 <p className="mt-2 text-sm text-gray-400">
-                  Add-ons are charged separately from the $600
-minimum event spend.
+                  Add-ons count toward the $600 minimum event spend.
+Only the amount exceeding the minimum is charged additionally.
                 </p>
               </div>
 
@@ -1434,9 +1464,9 @@ minimum event spend.
               />
               {discount > 0 && (
   <PriceRow
-    label="Promotion Discount"
-    value={-discount}
-  />
+  label="Promotion Discount"
+  value={-appliedDiscount}
+/>
 )}
 <div className="mt-4 mb-4">
   <label className="block text-sm text-gray-300 mb-2">
@@ -1467,10 +1497,7 @@ if (code === "FIRST50") {
     setDiscount(0);
     setPromoMessage("Enter a discount between 1% and 99%.");
   } else {
-    const eligibleAmount = Math.max(
-      0,
-      subtotal - travelFee - setupFee,
-    );
+    const eligibleAmount = foodSubtotal;
 
     setDiscount(
       Math.round(eligibleAmount * (percentage / 100) * 100) / 100,
@@ -1558,9 +1585,11 @@ if (code === "FIRST50") {
 >
   Download PDF Quote
 </button>
-              <p className="mt-3 text-sm text-gray-200">
-                Suggested tip range: ${Math.round(estimatedTotal * 0.2).toFixed(2)}–${Math.round(estimatedTotal * 0.3).toFixed(2)}
-              </p>
+              <div className="mt-3 space-y-2 text-sm text-gray-200">
+  <p>20% Tip: ${(tipBase * 0.2).toFixed(2)}</p>
+  <p>25% Tip: ${(tipBase * 0.25).toFixed(2)}</p>
+  <p>30% Tip: ${(tipBase * 0.3).toFixed(2)}</p>
+</div>
             </div>
             <Link href="/booking" className="mt-6 block w-full rounded-full bg-yellow-500 px-8 py-4 text-center text-lg font-bold text-black transition hover:bg-yellow-400">
               READY TO BOOK? SUBMIT A BOOKING REQUEST
