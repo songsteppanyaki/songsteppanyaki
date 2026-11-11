@@ -358,7 +358,7 @@ const nextGallery = () => {
 </div>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="block w-full">
             <div className="rounded-[2.5rem] border border-white/20 bg-black/50 p-5 shadow-2xl backdrop-blur-md">
               <p className="text-xs font-bold tracking-[0.3em] text-amber-400">
                 THE EXPERIENCE
