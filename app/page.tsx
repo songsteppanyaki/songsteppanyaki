@@ -373,17 +373,22 @@ const nextGallery = () => {
               </h2>
 
               <div className="mt-8 space-y-4">
-                {benefits.map((benefit) => (
-                  <div
-                    key={benefit}
-                    className="flex items-center gap-3 border-b border-white/10 pb-4"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-400 text-sm font-black text-black">
-                      ✓
-                    </span>
-                    <span className="text-neutral-200">{benefit}</span>
-                  </div>
-                ))}
+              
+{benefits.map((benefit) => (
+  <div
+    key={benefit}
+    className="flex items-start gap-3 border-b border-white/10 pb-4"
+  >
+    <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-400 text-sm font-black text-black">
+      ✓
+    </span>
+
+    <span className="min-w-0 flex-1 break-words text-sm leading-6 text-neutral-200 sm:text-base">
+      {benefit}
+    </span>
+  </div>
+))}
+
               </div>
             </div>
           </div>
