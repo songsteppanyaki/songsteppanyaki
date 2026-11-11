@@ -387,17 +387,23 @@ const nextGallery = () => {
           </div>
         </div>
       </section>
-<div className="mb-12 grid gap-6 md:grid-cols-2">
+
+<div className="mb-12 grid gap-6 md:grid-cols-3">
+
+  {/* HALAL */}
   <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Halal Upgrade
     </p>
+
     <p className="mt-4 text-xl font-black text-white">
       $259 <span className="text-lg font-medium">/ person</span>
     </p>
+
     <p className="mt-4 text-sm leading-6 text-gray-300">
       Full Halal Dining Experience
     </p>
+
     <a
       href="/booking"
       className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
@@ -406,16 +412,45 @@ const nextGallery = () => {
     </a>
   </div>
 
-  <div className="rounded-6xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+  {/* BUFFET - CENTER */}
+  <div className="rounded-2xl border border-amber-400/60 bg-zinc-900 p-8 text-center">
+    <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
+      Buffet-Style Hibachi
+    </p>
+
+    <p className="mt-4 text-xl font-black text-white">
+      $35 <span className="text-lg font-medium">/ person</span>
+    </p>
+
+    <ul className="mt-4 space-y-2 text-sm leading-6 text-gray-300">
+      <li>● Hibachi Vegetables</li>
+      <li>● 2 Protein Choices</li>
+      <li>● 1 Side Order Choice</li>
+      <li>● Signature Sauce</li>
+    </ul>
+
+    <a
+      href="/booking"
+      className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
+    >
+      Book Buffet Experience
+    </a>
+  </div>
+
+  {/* KOSHER */}
+  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Kosher Upgrade
     </p>
+
     <p className="mt-4 text-xl font-black text-white">
       $199 <span className="text-lg font-medium">/ person</span>
     </p>
+
     <p className="mt-4 text-sm leading-6 text-gray-300">
       Full Kosher Dining Experience
     </p>
+
     <a
       href="/booking"
       className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
@@ -423,7 +458,9 @@ const nextGallery = () => {
       Book Kosher Experience
     </a>
   </div>
+
 </div>
+
 {/* Monthly Promotion Banner */}
 <section className="px-5 pb-12">
   <div className="mx-auto max-w-7xl">

@@ -56,7 +56,13 @@ const proteins = [
   "Tuna",
   "Tofu",
 ];
-
+const buffetProteinOptions = [
+  "New York Steak",
+  "Chicken",
+  "Shrimp",
+  "Salmon",
+  "Scallops",
+];
 const addOns: PricedItem[] = [
   {
     name: "Extra Chicken",
@@ -163,6 +169,8 @@ const proteinToAddOn: Record<string, string> = {
   Shrimp: "Extra Shrimp",
   Tuna: "Extra Tuna",
   Tofu: "Extra Tofu",
+  Salmon: "Salmon",
+  Scallops: "Scallops",
 };
 
 const allergies = [
@@ -195,6 +203,17 @@ const dietaryPreferences = [
 
 export default function BookingPage() {
   const router = useRouter();
+    const [serviceType, setServiceType] = useState<
+    "traditional" | "buffet"
+  >("traditional");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("service") === "buffet") {
+      setServiceType("buffet");
+    }
+  }, []);
   const [guestQuantities, setGuestQuantities] = useState<
     Record<string, number>
   >({});
@@ -202,6 +221,8 @@ export default function BookingPage() {
   const [proteinQuantities, setProteinQuantities] = useState<
     Record<string, number>
   >({});
+  const [selectedBuffetProteins, setSelectedBuffetProteins] =
+  useState<string[]>([]);
 
   const [addOnQuantities, setAddOnQuantities] = useState<
     Record<string, number>
@@ -232,13 +253,19 @@ export default function BookingPage() {
     }, 0);
   }, [guestQuantities]);
 
-  const calculatedGuestTotal = useMemo(() => {
-    return guestCategories.reduce((total, category) => {
-      const quantity = guestQuantities[category.name] || 0;
+ const calculatedGuestTotal = useMemo(() => {
+  return guestCategories.reduce((total, category) => {
+    const quantity = guestQuantities[category.name] || 0;
 
-      return total + quantity * category.price;
-    }, 0);
-  }, [guestQuantities]);
+    let price = category.price;
+
+    if (serviceType === "buffet") {
+      price = category.name === "Children Under 5" ? 0 : 35;
+    }
+
+    return total + quantity * price;
+  }, 0);
+}, [guestQuantities, serviceType]);
 
   const chargedGuestTotal = Math.max(
     calculatedGuestTotal,
@@ -303,15 +330,38 @@ const totalIncludedProteinAllowance = Math.max(
     0,
     totalIncludedProteinAllowance - totalProteinSelections,
   );
+const buffetPaidProteins = selectedBuffetProteins.slice(2);
 
-  const addOnsTotal = useMemo(() => {
-    return addOns.reduce((total, item) => {
+const buffetProteinAddOnsTotal = buffetPaidProteins.reduce(
+  (total, protein) => {
+    const addOnName = proteinToAddOn[protein];
+
+    const addOnItem = addOns.find(
+      (item) => item.name === addOnName
+    );
+
+    return total + (addOnItem?.price || 0) * totalGuests;
+  },
+  0
+);
+ const addOnsTotal = useMemo(() => {
+  return (
+    addOns.reduce((total, item) => {
       const quantity = addOnQuantities[item.name] || 0;
 
-      return total + quantity * item.price;
-    }, 0);
-  }, [addOnQuantities]);
+      const guestMultiplier =
+        serviceType === "buffet" ? totalGuests : 1;
 
+      return total + quantity * item.price * guestMultiplier;
+    }, 0) +
+    (serviceType === "buffet" ? buffetProteinAddOnsTotal : 0)
+  );
+}, [
+  addOnQuantities,
+  serviceType,
+  totalGuests,
+  buffetProteinAddOnsTotal,
+]);
   const setupPricePerPerson =
     (tablesAndChairsSelected ? 6 : 0) +
     (tableSetupSelected ? 14 : 0);
@@ -669,7 +719,15 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
     alert("Please enter the number of guests.");
     return;
   }
-
+  if (
+    serviceType === "buffet" &&
+    selectedBuffetProteins.length < 2
+  ) {
+    alert(
+      "Please select at least two protein options for your Buffet package."
+    );
+    return;
+  }
 
   const formData = new FormData(event.currentTarget);
 
@@ -701,22 +759,58 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
       quantity: proteinQuantities[protein] || 0,
     }));
 
-  const selectedAddOns = addOns
-    .filter(
-      (item) =>
-        (addOnQuantities[item.name] || 0) > 0,
-    )
-    .map((item) => {
-      const quantity =
-        addOnQuantities[item.name] || 0;
+ const regularSelectedAddOns = addOns
+  .filter(
+    (item) =>
+      (addOnQuantities[item.name] || 0) > 0,
+  )
+  .map((item) => {
+    const quantity =
+      addOnQuantities[item.name] || 0;
 
-      return {
-        name: item.name,
-        quantity,
-        unitPrice: item.price,
-        subtotal: quantity * item.price,
-      };
-    });
+    const chargedQuantity =
+      serviceType === "buffet"
+        ? quantity * totalGuests
+        : quantity;
+
+    return {
+      name: item.name,
+      quantity: chargedQuantity,
+      quantityPerGuest: quantity,
+      guestCount: totalGuests,
+      unitPrice: item.price,
+      subtotal: chargedQuantity * item.price,
+    };
+  });
+
+const buffetProteinAddOns =
+  serviceType === "buffet"
+    ? selectedBuffetProteins.slice(2).flatMap((protein) => {
+        const addOnName = proteinToAddOn[protein];
+
+        const item = addOns.find(
+          (addOn) => addOn.name === addOnName,
+        );
+
+        if (!item) return [];
+
+        return [
+          {
+            name: item.name,
+            quantity: totalGuests,
+            quantityPerGuest: 1,
+            guestCount: totalGuests,
+            unitPrice: item.price,
+            subtotal: item.price * totalGuests,
+          },
+        ];
+      })
+    : [];
+
+const selectedAddOns = [
+  ...regularSelectedAddOns,
+  ...buffetProteinAddOns,
+];
 
   const bookingData = {
     fullName: formData.get("fullName"),
@@ -742,6 +836,12 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
     guests: selectedGuests,
     totalGuests,
 
+    serviceType,
+serviceName:
+  serviceType === "buffet"
+    ? "Buffet-Style Hibachi"
+    : "Traditional Hibachi",
+
     calculatedGuestTotal,
     minimumBookingCharge: MINIMUM_BOOKING_CHARGE,
     minimumChargeAdjustment,
@@ -751,6 +851,10 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
     complimentaryGuestSlots,
 
     proteins: selectedProteins,
+    buffetProteins: selectedBuffetProteins.map((protein) => ({
+  name: protein,
+  included: selectedBuffetProteins.indexOf(protein) < 2,
+})),
     regularProteinAllowance,
     complimentaryProteinAllowance,
     totalIncludedProteinAllowance,
@@ -981,7 +1085,50 @@ router.push("/booking/payment");
               </label>
             </div>
           </section>
+{/* Service Type Selection */}
+<div className="mb-8">
+  <h2 className="mb-4 text-xl font-bold text-yellow-400">
+    Choose Your Service
+  </h2>
 
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <button
+      type="button"
+      onClick={() => setServiceType("traditional")}
+      className={`rounded-xl border-2 p-5 text-left transition ${
+        serviceType === "traditional"
+          ? "border-yellow-400 bg-yellow-400/10"
+          : "border-white/20 hover:border-yellow-400"
+      }`}
+    >
+      <h3 className="text-lg font-bold">Traditional Hibachi</h3>
+      <p className="mt-2 text-sm text-gray-400">
+        Adults $60/person · Children (5–13) $30/person
+      </p>
+      <p className="mt-2 text-sm text-gray-400">
+        Includes two protein portions per adult.
+      </p>
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setServiceType("buffet")}
+      className={`rounded-xl border-2 p-5 text-left transition ${
+        serviceType === "buffet"
+          ? "border-yellow-400 bg-yellow-400/10"
+          : "border-white/20 hover:border-yellow-400"
+      }`}
+    >
+      <h3 className="text-lg font-bold">Buffet-Style Hibachi</h3>
+      <p className="mt-2 text-sm text-gray-400">
+        Adults and Children (5–13): $35/person
+      </p>
+      <p className="mt-2 text-sm text-gray-400">
+        Vegetables, two protein choices, one side order, and signature sauce.
+      </p>
+    </button>
+  </div>
+</div>
           {/* Guest Pricing */}
           <section>
             <div className="flex flex-col gap-4 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
@@ -1020,8 +1167,12 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
                 const quantity =
                   guestQuantities[category.name] || 0;
 
-                const subtotal =
-                  quantity * category.price;
+                const unitPrice =
+  serviceType === "buffet"
+    ? category.name === "Children Under 5" ? 0 : 35
+    : category.price;
+
+const subtotal = quantity * unitPrice;
 
                 return (
                   <div
@@ -1038,9 +1189,15 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
                       </p>
 
                       <p className="mt-1 text-sm font-semibold text-yellow-400">
-                        {category.price === 0
-                          ? "Free"
-                          : `$${category.price.toFixed(2)} per guest`}
+                       {(serviceType === "buffet"
+  ? category.name === "Children Under 5" ? 0 : 35
+  : category.price) === 0
+  ? "Free"
+  : `$${(
+      serviceType === "buffet"
+        ? category.name === "Children Under 5" ? 0 : 35
+        : category.price
+    ).toFixed(2)} per guest`}
                       </p>
                     </div>
 
@@ -1114,9 +1271,11 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
                 Protein Selection
               </h2>
 
-              <p className="mt-2 text-2xl text-gray-400">
-                Choose from New York Steak, Chicken, Shrimp, Tuna and Tofu. Each paid adult includes 2 protein portions. Children ages 5–13 include 1 protein portion. Children under 5 do not include a protein portion. Once the included protein allowance is used, additional Chicken, Steak, or Shrimp will be charged as add-ons.
-              </p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">
+  {serviceType === "buffet"
+    ? "Choose two protein options included with your Buffet package. Additional protein options are charged per guest."
+    : "Choose from New York Steak, Chicken, Shrimp, Tuna and Tofu. Each adult includes 2 protein portions. Children ages 5–13 include 1 protein portion. Children under 5 do not include a protein portion. Additional portions are charged as add-ons."}
+</p>
             </div>
 
             {false && (
@@ -1147,9 +1306,9 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
   description="Protein choices still available."
 />
             </div>
-)}
-            {totalGuests > 0 &&
-              complimentaryGuestSlots > 0 && (
+)}{serviceType === "traditional" &&
+  totalGuests > 0 &&
+  complimentaryGuestSlots > 0 && (
                 <div className="mt-5 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5">
                   <p className="font-bold text-yellow-400">
                     Complimentary Protein Benefit
@@ -1160,9 +1319,11 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
                   </p>
                 </div>
               )}
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {proteins.map((protein) => {
+              
+            {serviceType === "traditional" && (
+  <>
+  <div className="mt-6 grid gap-4 md:grid-cols-2">
+    {proteins.map((protein) => {
                 const quantity =
                   proteinQuantities[protein] || 0;
 
@@ -1219,54 +1380,111 @@ We require a non-refundable minimum deposit of $100 or more to secure your event
                   </p>
                 </div>
 
-                <div className="text-left sm:text-right">
-                  <p className="text-sm text-gray-400">
-                    Selected / Included
-                  </p>
+            <div className="text-left sm:text-right">
+  <p className="text-sm text-gray-400">
+    Selected / Included
+  </p>
 
-                  <p
-                    className="text-2xl font-bold text-yellow-400"
-                  >
-                    {totalProteinSelections} /{" "}
-                    {totalIncludedProteinAllowance}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+  <p className="text-2xl font-bold text-yellow-400">
+    {totalProteinSelections} /{" "}
+    {totalIncludedProteinAllowance}
+  </p>
+</div>
+</div>
+</div>
+</>
+)}
 
-          {/* Add-ons */}
-          <section>
-            <div className="flex flex-col gap-3 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-yellow-400">
-                  Add-ons
-                </h2>
+</section>
+{/* Buffet Protein Selection */}
+{serviceType === "buffet" && (
+  <section>
+    <h2 className="text-2xl font-bold text-yellow-400">
+      Buffet Protein Selection
+    </h2>
+    <p className="mt-3 text-sm text-gray-400">
+  Choose two protein options included in your package.
+  Additional protein options are charged per guest.
+</p>
 
-                <p className="mt-2 text-sm text-gray-400">
-                  Add-ons are charged separately from the $600
-minimum event spend.
-                </p>
-              </div>
+<div className="mt-6 grid gap-4 md:grid-cols-2">
+  {buffetProteinOptions.map((protein) => (
+    <label
+      key={protein}
+      className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/30 p-4"
+    >
+      <input
+        type="checkbox"
+        checked={selectedBuffetProteins.includes(protein)}
+        onChange={(event) => {
+          setSelectedBuffetProteins((current) =>
+            event.target.checked
+              ? [...current, protein]
+              : current.filter((item) => item !== protein)
+          );
+        }}
+        className="h-5 w-5 accent-yellow-400"
+      />
+<div className="flex flex-1 items-center justify-between gap-3">
+  <span className="font-semibold text-white">
+    {protein}
+  </span>
 
-              <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-5 py-3">
-                <p className="text-xs uppercase tracking-widest text-gray-400">
-                  Add-ons Total
-                </p>
+  <span
+    className={`text-sm font-semibold ${
+      selectedBuffetProteins.indexOf(protein) < 2 &&
+      selectedBuffetProteins.includes(protein)
+        ? "text-green-400"
+        : "text-yellow-400"
+    }`}
+  >
+    {selectedBuffetProteins.indexOf(protein) < 2 &&
+    selectedBuffetProteins.includes(protein)
+      ? "Included"
+      : selectedBuffetProteins.includes(protein)
+        ? "Paid Add-on"
+        : "Select"}
+  </span>
+</div>
+    </label>
+  ))}
+</div>
+  </section>
+)}
+{/* Add-ons */}
+<section>
+  <div className="flex flex-col gap-3 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
+    <div>
+      <h2 className="text-2xl font-bold text-yellow-400">
+        Add-ons
+      </h2>
 
-                <p className="mt-1 text-2xl font-bold text-yellow-400">
-                  ${addOnsTotal.toFixed(2)}
-                </p>
-              </div>
-            </div>
+      <p className="mt-2 text-sm text-gray-400">
+        Add-ons are charged separately from the $600 minimum event spend.
+      </p>
+    </div>
 
-            <div className="mt-6 space-y-4">
+    <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-5 py-3">
+      <p className="text-xs uppercase tracking-widest text-gray-400">
+        Add-ons Total
+      </p>
+
+      <p className="mt-1 text-2xl font-bold text-yellow-400">
+        ${addOnsTotal.toFixed(2)}
+      </p>
+    </div>
+  </div>
+
+  <div className="mt-6 space-y-4">
               {addOns.map((item) => {
                 const quantity =
                   addOnQuantities[item.name] || 0;
 
-                const subtotal =
-                  quantity * item.price;
+                const guestMultiplier =
+  serviceType === "buffet" ? totalGuests : 1;
+
+const subtotal =
+  quantity * item.price * guestMultiplier;
 
                 return (
                   <div

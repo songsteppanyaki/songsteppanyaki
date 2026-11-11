@@ -34,6 +34,16 @@ export async function POST(req: NextRequest) {
 
       const email = session.customer_details?.email;
       const metadata = session.metadata || {};
+      const buffetProteins = JSON.parse(
+  metadata.buffetProteins || "[]"
+);
+      const serviceType = metadata.serviceType || "traditional";
+
+const serviceName =
+  metadata.serviceName ||
+  (serviceType === "buffet"
+    ? "Buffet-Style Hibachi"
+    : "Traditional Hibachi");
 
       // Assign a monthly order number only after Stripe confirms payment.
       // The database RPC is idempotent for each Stripe Checkout Session.
@@ -167,6 +177,10 @@ export async function POST(req: NextRequest) {
           </p>
 
           <h3>Event</h3>
+          <p>
+  <strong>Service Type:</strong>
+  ${serviceName}
+</p>
 
           <p>
             <strong>Date:</strong>
@@ -232,7 +246,23 @@ export async function POST(req: NextRequest) {
                 : "<li>None</li>"
             }
           </ul>
-
+${
+  serviceType === "buffet" && buffetProteins.length > 0
+    ? `
+    <h3>Buffet Protein Selections</h3>
+    <ul>
+      ${buffetProteins
+        .map(
+          (protein: any) =>
+            `<li>${protein.name} - ${
+              protein.included ? "Included" : "Paid Add-on"
+            }</li>`
+        )
+        .join("")}
+    </ul>
+    `
+    : ""
+}
           <h3>Add-ons</h3>
 
           <ul>
@@ -339,6 +369,9 @@ export async function POST(req: NextRequest) {
           subject: "Song Teppanyaki Booking Confirmation",
           html: `
             <h2>Thank You for Choosing Song Teppanyaki!</h2>
+            <p>
+  <strong>Service Type:</strong> ${serviceName}
+</p>
 
             <p><strong>Your Monthly Order Number:</strong> ${orderNumber}</p>
             <p>Please keep this number for your reference. It identifies your booking in our monthly order sequence.</p>
@@ -362,7 +395,23 @@ export async function POST(req: NextRequest) {
               <strong>Event Address:</strong>
               ${metadata.address || "N/A"}
             </p>
-
+${
+  serviceType === "buffet" && buffetProteins.length > 0
+    ? `
+      <h3>Buffet Protein Selections</h3>
+      <ul>
+        ${buffetProteins
+          .map(
+            (protein: any) =>
+              `<li>${protein.name} - ${
+                protein.included ? "Included" : "Paid Add-on"
+              }</li>`
+          )
+          .join("")}
+      </ul>
+    `
+    : ""
+}
             <p>
               <strong>Estimated Total:</strong>
               $${estimatedTotal.toFixed(2)}
@@ -458,6 +507,7 @@ export async function POST(req: NextRequest) {
         });
 
         const eventDescription = `
+        Service Type: ${serviceName}
 Monthly Order Number: ${orderNumber}
 Customer: ${metadata.fullName || "N/A"}
 Phone: ${metadata.phone || "N/A"}
@@ -479,6 +529,21 @@ ${
         )
         .join("\n")
     : "None"
+}
+${
+  serviceType === "buffet" && buffetProteins.length > 0
+    ? `
+Buffet Protein Selections:
+${buffetProteins
+  .map(
+    (protein: any) =>
+      `${protein.name} - ${
+        protein.included ? "Included" : "Paid Add-on"
+      }`
+  )
+  .join("\n")}
+`
+    : ""
 }
 
 Add-ons:
@@ -581,10 +646,10 @@ ${metadata.specialRequests || "None"}
                 await calendar.events.insert({
                   calendarId,
                   requestBody: {
-                    summary:
-                      `Song Teppanyaki ${orderNumber} - ${
-                        metadata.fullName || "Booking"
-                      }`,
+                  summary:
+  `Song Teppanyaki ${orderNumber} - ${serviceName} - ${
+    metadata.fullName || "Booking"
+  }`,
 
                     location:
                       metadata.address || "",

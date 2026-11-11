@@ -57,6 +57,11 @@ export async function POST(request: NextRequest) {
 
       metadata: {
         businessName: "Song Teppanyaki",
+        serviceType: String(bookingData?.serviceType || "traditional"),
+
+serviceName: String(
+  bookingData?.serviceName || "Traditional Hibachi"
+),
 
         depositAmount: "100",
 
@@ -88,7 +93,9 @@ export async function POST(request: NextRequest) {
         proteins: JSON.stringify(
           bookingData?.proteins || [],
         ),
-
+        buffetProteins: JSON.stringify(
+          bookingData?.buffetProteins || [],
+        ),
         addOns: JSON.stringify(
           bookingData?.addOns || [],
         ),
