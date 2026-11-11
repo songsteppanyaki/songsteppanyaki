@@ -24,6 +24,8 @@ const services = [
 const benefits = [
   "Professional private hibachi chef",
   "Live cooking and entertainment",
+  "Exciting Hibachi Fire Show",
+  "Interactive games and guest participation",
   "Fresh ingredients",
   "Custom protein selections",
   "Birthday and celebration experience",
