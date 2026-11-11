@@ -398,7 +398,7 @@ const nextGallery = () => {
 <div className="mb-12 grid gap-6 md:grid-cols-3">
 
   {/* HALAL */}
-  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+  <div className="order-3 rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Halal Upgrade
     </p>
@@ -420,7 +420,7 @@ const nextGallery = () => {
   </div>
 
   {/* BUFFET - CENTER */}
-  <div className="rounded-2xl border border-amber-400/60 bg-zinc-900 p-8 text-center">
+  <div className="order-1 rounded-2xl border border-amber-400/60 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Buffet-Style Hibachi
     </p>
@@ -432,7 +432,7 @@ const nextGallery = () => {
     <ul className="mt-4 space-y-2 text-sm leading-6 text-gray-300">
       <li>● Hibachi Vegetables</li>
       <li>● 2 Protein Choices</li>
-      <li>● 1 Side Order Choice</li>
+     <li>● 1 Choice of Fried Rice or Hibachi Noodles</li>
       <li>● Signature Sauce</li>
     </ul>
 
@@ -445,7 +445,7 @@ const nextGallery = () => {
   </div>
 
   {/* KOSHER */}
-  <div className="rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
+  <div className="order-2 rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
       Full Kosher Upgrade
     </p>
