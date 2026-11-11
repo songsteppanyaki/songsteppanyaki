@@ -1496,9 +1496,12 @@ const subtotal =
                         {item.name}
                       </h3>
 
-                      <p className="mt-1 text-sm text-yellow-400">
-                        ${item.price.toFixed(2)} each
-                      </p>
+                    <p className="mt-1 text-sm text-yellow-400">
+  ${item.price.toFixed(2)}{" "}
+  {serviceType === "buffet"
+    ? "per guest"
+    : "each"}
+</p>
                     </div>
 
                     <QuantityControl
