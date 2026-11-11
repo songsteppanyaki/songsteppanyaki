@@ -395,8 +395,28 @@ const nextGallery = () => {
         </div>
       </section>
 
-<div className="mb-12 grid gap-6 md:grid-cols-3">
+<div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+{/* TRADITIONAL */}
+<div className="order-1 rounded-2xl border border-amber-400/60 bg-zinc-900 p-8 text-center">
+  <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
+    Traditional Hibachi
+  </p>
 
+  <p className="mt-4 text-xl font-black text-white">
+    $60 <span className="text-lg font-medium">/ person</span>
+  </p>
+
+  <p className="mt-4 text-sm leading-6 text-gray-300">
+    Traditional Private Hibachi Experience
+  </p>
+
+  <a
+    href="/booking"
+    className="mt-6 inline-block rounded-full bg-amber-400 px-8 py-3 font-bold text-black transition hover:bg-amber-300"
+  >
+    Book Traditional Experience
+  </a>
+</div>
   {/* HALAL */}
   <div className="order-3 rounded-2xl border border-amber-400/40 bg-zinc-900 p-8 text-center">
     <p className="text-xl font-bold uppercase tracking-widest text-amber-400">
