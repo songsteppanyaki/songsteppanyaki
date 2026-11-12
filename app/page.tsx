@@ -267,13 +267,21 @@ const nextGallery = () => {
     Yelp Reviews
   </a>
 
-  {/* 电话 */}
-  <a
-    href="tel:6266498696"
-    className="text-lg font-bold transition hover:text-amber-400 lg:text-xl"
-  >
-    📞 626-649-8696
-  </a>
+ {/* 电话 1 */}
+<a
+  href="tel:6266498696"
+  className="text-lg font-bold transition hover:text-amber-400"
+>
+  📞 626-649-8696
+</a>
+
+{/* 电话 2 */}
+<a
+  href="tel:6268302267"
+  className="text-lg font-bold transition hover:text-amber-400"
+>
+  📞 626-830-2267
+</a>
 
   {/* Email */}
   <a
