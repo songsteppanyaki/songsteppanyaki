@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
 
+      // 自动填写客户邮箱
+      customer_email: String(bookingData?.email || ""),
       line_items: [
         {
           quantity: 1,
