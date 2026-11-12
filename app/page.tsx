@@ -229,7 +229,12 @@ const nextGallery = () => {
         >
           BOOK NOW
         </Link>
-
+<Link
+  href="/quick-deposit"
+  className="rounded-full border border-amber-400 bg-black px-4 py-2.5 text-sm font-bold text-amber-400 transition hover:bg-amber-400 hover:text-black"
+>
+  QUICK DEPOSIT
+</Link>
         <Link
           href="/booking/inquiry"
           className="rounded-full border border-amber-400 px-4 py-2.5 text-sm font-bold text-amber-400 transition hover:bg-amber-400 hover:text-black"
