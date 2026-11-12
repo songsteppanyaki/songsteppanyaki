@@ -17,13 +17,23 @@ export default function QuickDepositPage() {
       const formData = new FormData(e.currentTarget);
 
       const fullName = String(formData.get("fullName") || "");
+      const email = String(formData.get("email") || "");
+      const phone = String(formData.get("phone") || "");
       const address = String(formData.get("address") || "");
       const eventDate = String(formData.get("eventDate") || "");
       const eventTime = String(formData.get("eventTime") || "");
+      const specialRequests = String(
+        formData.get("specialRequests") || ""
+      );
+
       const adults = Number(formData.get("adults") || 0);
       const children = Number(formData.get("children") || 0);
 
       const totalGuests = adults + children;
+
+      if (totalGuests < 1) {
+        throw new Error("Please enter at least one guest.");
+      }
 
       const guests = [
         {
@@ -44,8 +54,8 @@ export default function QuickDepositPage() {
 
       const bookingData = {
         fullName,
-        phone: "",
-        email: "",
+        phone,
+        email,
 
         address,
         completeEventAddress: address,
@@ -68,7 +78,8 @@ export default function QuickDepositPage() {
         allergies: [],
         dietaryPreferences: [],
 
-        specialRequests: "Quick Deposit Booking",
+        specialRequests:
+          specialRequests.trim() || "No special requests",
 
         distanceMiles: 0,
         travelFee: 0,
@@ -89,14 +100,14 @@ export default function QuickDepositPage() {
             depositAmount: 100,
             bookingData,
           }),
-        },
+        }
       );
 
       const data = await response.json();
 
       if (!response.ok || !data.url) {
         throw new Error(
-          data.error || "Unable to start payment.",
+          data.error || "Unable to start payment."
         );
       }
 
@@ -105,7 +116,7 @@ export default function QuickDepositPage() {
       setError(
         err instanceof Error
           ? err.message
-          : "Unable to start payment.",
+          : "Unable to start payment."
       );
       setLoading(false);
     }
@@ -135,7 +146,7 @@ export default function QuickDepositPage() {
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
 
           <div>
-            <label className="mb-2 block">Full Name</label>
+            <label className="mb-2 block">Full Name *</label>
             <input
               required
               name="fullName"
@@ -145,7 +156,29 @@ export default function QuickDepositPage() {
           </div>
 
           <div>
-            <label className="mb-2 block">Event Address</label>
+            <label className="mb-2 block">Email Address *</label>
+            <input
+              required
+              type="email"
+              name="email"
+              placeholder="Your email address"
+              className="w-full rounded-xl bg-neutral-800 p-4 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block">Phone Number *</label>
+            <input
+              required
+              type="tel"
+              name="phone"
+              placeholder="Your phone number"
+              className="w-full rounded-xl bg-neutral-800 p-4 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block">Event Address *</label>
             <input
               required
               name="address"
@@ -155,7 +188,7 @@ export default function QuickDepositPage() {
           </div>
 
           <div>
-            <label className="mb-2 block">Party Date</label>
+            <label className="mb-2 block">Party Date *</label>
             <input
               required
               type="date"
@@ -166,7 +199,7 @@ export default function QuickDepositPage() {
           </div>
 
           <div>
-            <label className="mb-2 block">Party Time</label>
+            <label className="mb-2 block">Party Time *</label>
             <input
               required
               type="time"
@@ -176,7 +209,7 @@ export default function QuickDepositPage() {
           </div>
 
           <div>
-            <label className="mb-2 block">Adults (Ages 14+)</label>
+            <label className="mb-2 block">Adults (Ages 14+) *</label>
             <input
               required
               type="number"
@@ -200,6 +233,18 @@ export default function QuickDepositPage() {
               step="1"
               defaultValue="0"
               className="w-full rounded-xl bg-neutral-800 p-4 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block">
+              Special Requests / Notes (Optional)
+            </label>
+            <textarea
+              name="specialRequests"
+              rows={4}
+              placeholder="Tell us about your event, food preferences, allergies, or any special requests..."
+              className="w-full rounded-xl bg-neutral-800 p-4 text-white placeholder:text-neutral-500"
             />
           </div>
 
