@@ -1,0 +1,109 @@
+[33m36f7fb3[m Initial Song Teppanyaki website
+[33ma6ff3ff[m Create first Song Teppanyaki homepage
+[33md30baaa[m Design Song Teppanyaki homepage
+[33m8ff6bfc[m Add hero background image
+[33mc43ecef[m Add hero background image
+[33m47b2685[m Update booking pricing and protein allowance
+[33m29c7f53[m Make only contact address and guest count required
+[33m15031a0[m Update Event Setup options
+[33mf8d977a[m Allow both event setup options
+[33m876bc4f[m Update homepage gallery and food section
+[33m0ca4332[m Update gallery, food options, pricing and deposit
+[33ma966bbc[m Add Google Calendar booking integration
+[33m113d61b[m Fix Vercel Google Calendar credentials
+[33mb568e55[m Fix Google Calendar webhook
+[33m62e1b79[m Temporarily set deposit to  for live payment test
+[33m62c3b66[m Use verified domain for customer emails
+[33me68fbd0[m Set deposit to  for email test
+[33m2400ef5[m Finalize booking payment tax email and calendar flow
+[33m9b7dc59[m Update booking deposit to
+[33md6ce1ab[m Update deposit display to
+[33m0437351[m Update deposit amount to 100
+[33m316f71e[m Set booking deposit to
+[33m66182b5[m Add contact information to homepage
+[33m9b94b29[m Update header with contact information
+[33m2aed147[m Update header contact information
+[33m7d5b84d[m Update images
+[33meed1e1c[m Add Google Ads tag
+[33m0a8f712[m Add Google Ads purchase conversion tracking
+[33m0bf8ec0[m Fix Google Ads purchase conversion tracking
+[33m3ec36ed[m fix Google Ads purchase conversion
+[33m4a3b5cd[m Fix Google Ads purchase conversion tracking
+[33m4c1b506[m Update booking deposit to
+[33m061c087[m Add  deposit notice
+[33m17511c3[m Add  deposit notice
+[33m484003c[m Update minimum spend wording
+[33mc69a849[m Fix minimum booking charge display logic
+[33m651a2bf[m Update payment terms
+[33mcaab385[m Fix protein minimum 20 portions logic
+[33m04cff78[m Update promo discount to
+[33m073be1e[m Change promo code to FIRST50
+[33m61e2fb1[m Add chef tips notice
+[33mb5515b2[m Fix Google Ads purchase conversion timing
+[33m0397138[m Clarify deposit credit toward total
+[33m6a4dc3b[m Make event date required
+[33mb817681[m Clarify deposit and cancellation policy
+[33me03f4cb[m Hide protein calculation details
+[33m8297fe6[m Improve minimum package display
+[33m23831c7[m Update gratuity notice
+[33m10aea24[m Update booking deposit wording
+[33mfbca8ac[m Add Google and Yelp review links
+[33m85fa18f[m Update pricing and booking information
+[33mffc80f0[m Improve booking page wording
+[33m1383481[m update video upload
+[33m08e2561[m fix gallery upload folder
+[33mc3d7146[m show uploaded gallery items with existing photos
+[33m363aca9[m fix signed gallery folder upload
+[33m8e95cdf[m Update top review links
+[33md3860eb[m Update top review links
+[33m1baa3d6[m Update top review links
+[33m1bff719[m Update booking confirmation
+[33m3681ec7[m Show latest gallery uploads first
+[33m5a06a44[m Add GA4 tracking alongside Google Ads
+[33mcade84b[m Add GA4 tracking alongside Google Ads
+[33m1072cb1[m Update booking and marketing consent
+[33mfb0ecdf[m Update booking FAQ answer
+[33m99cf867[m Update gallery image
+[33mb17dad5[m Update gallery image
+[33m1d1aae9[m Update gallery image
+[33m5823990[m Update gallery image
+[33mfefc170[m Fix Google Ads purchase conversion tracking
+[33me20a694[m Fix Google Ads purchase conversion tracking
+[33m1ebaba2[m Correct Google Ads conversion label
+[33m674eb48[m Verify Stripe payment before Google Ads conversion
+[33mca5dcb2[m Add Stripe payment verification endpoint
+[33m9168bf2[m Update homepage booking steps
+[33m2d30b6a[m Add email-only booking inquiry
+[33m27ce72b[m Track Google Ads booking inquiry conversion
+[33mdb3b80c[m Improve Google tag initialization
+[33md981f84[m Update booking inquiry conversion label
+[33md37d1fe[m Add halal steak, halal wagyu, and extra tuna options
+[33mf5fd5bc[m Add Halal and Kosher upgrade cards to homepage
+[33mb912291[m Add food gallery descriptions and sauce images
+[33m3b23819[m Update booking deposit policy
+[33m4e8b114[m Add gallery titles and descriptions
+[33mc6e958d[m Center gallery button
+[33m4369cec[m Fix Cloudinary gallery upload signature
+[33m6426f25[m Add monthly booking order numbers
+[33m003cb0b[m Add monthly food promotion and booking order numbers
+[33m7b86deb[m Update navigation font size
+[33m30c1173[m Add percentage discounts and PDF quote details
+[33m76e00f8[m Add event setup photos to booking page
+[33m6926401[m Add event setup photos
+[33md2adfc5[m Update estimate PDF contact and payment information
+[33mfc69278[m Fix Pricing and Estimate navigation
+[33m35b4d08[m Add Estimate button to fixed bottom navigation
+[33m1868b95[m Update homepage pricing styles
+[33m028b4fc[m Update mobile typography and pricing styles
+[33ma8799a5[m Improve desktop header layout
+[33mb87cbcd[m Enlarge header logo and navigation
+[33ma85a46c[m Increase header logo and navigation size
+[33mf570e00[m Fix PDF tip section pagination
+[33ma7ae28b[m Update buffet pricing and protein add-on calculations
+[33mf283d67[m Update buffet pricing and protein add-on calculations
+[33m8144d0b[m Add live fire show and interactive games to homepage
+[33m675ca63[m Improve responsive homepage experience section
+[33m350aa76[m Fix mobile visibility of homepage experience section
+[33mf0bf15f[m Update buffet menu and reorder dining packages
+[33m50bb94b[m Add traditional hibachi package
+[33m8240546[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Add quick deposit booking page

@@ -131,7 +131,7 @@ const addOns: PricedItem[] = [
   price: 8,
 },
 {
-  name: "Wagyu Beef",
+  name: "Wagyu Upgrade",
   price: 129
 },
 {
